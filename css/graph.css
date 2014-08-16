@@ -1,0 +1,51 @@
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+  cursor:pointer;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+body,html{
+  height:100%;
+  width:100%;
+}
+.cntainr{
+	height:100%;
+	width:100%;
+	display:table;
+}
+.node.highlighted {
+  fill: #f00;
+}
+
+div.pop-up {
+	display: none;
+	position:absolute;
+	color: white;
+	font-size: 14px;
+	background: rgba(0,0,0,0.5);
+	padding: 5px 10px 5px 10px;
+	-moz-border-radius: 8px 8px;
+	border-radius: 8px 8px;
+}
+div.pop-up-title {
+	font-size: 15px;
+	width:200px;
+	margin-bottom: 4px;
+	font-weight: bolder;
+}
+div.pop-up-content {
+	font-size: 12px;
+}
+.minititle{
+	font-weight: bolder;
+}
+div.pop-img {
+	font-size: 12px;
+}
+div.pop-desc {
+	width: 150px;
+}
