@@ -10,15 +10,23 @@
 		thewidth = w.innerWidth|| e.clientWidth || g.clientWidth,
 		theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
 
-	var n = 6;
+	var n = 100;
 	var r = 9;
     var trans=[0,0];
     var scale=1;
-	var color = d3.scale.category20c();	
+	var color = d3.scale.category20c();
 	var previousd;
 	var counter=0;
 	var centerx;
 	var centery;
+    // used to store the number of links between two nodes. 
+    // mLinkNum[data.links[i].source + "," + data.links[i].target] = data.links[i].linkindex;
+    var mLinkNum = {};
+	var nodes = {};
+	var minLinks={};
+	
+	var test;
+	
     var zoom = d3.behavior.zoom()
         .scaleExtent([0.5, 10])
         .on("zoom", zoomed);
@@ -46,10 +54,10 @@
 		});	
 	
 	var force = d3.layout.force()
-        // .charge(-120)
-        // .linkDistance(30)
-	    .charge(-300)
 	    .linkDistance(100)
+	    .charge(-400)
+	    // .linkDistance(10)
+	    // .linkStrength(2)
 	    .size([thewidth, theheight])
 	
 	var drag = force.drag()
@@ -144,12 +152,22 @@
 	}
 	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
-					
-		link = link.data(graph.links)
-	        .enter().append("svg:line")
+		test = graph;
+	    // sort links first
+	    graph.links=sortLinks(graph.links);								
+ 
+	    // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
+	    var indexAndNum =setLinkIndexAndNum(graph.links);
+		graph.links=indexAndNum[0];
+		mLinkNum = indexAndNum[1];		
+		
+		//Starting with the graph			
+  		link = link.data(graph.links)
+	        .enter().append("svg:path")
 	      	// .style("stroke-width", function(d) { return d.accumulated+1; })
 	        .attr("class", "link")
-			.on("click",lover);
+	        .attr("fill", "none")
+  			.on("click",lover);
 		
 		gnodes = gnodes.data(graph.nodes)
 			.enter()
@@ -163,38 +181,112 @@
 			.attr("r", r - .5)
 			// .on ("mouseout",mout)
 			.attr('main', function(d) {return d.Entry})
-	        // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
-	        .style("stroke", function(d) { return color(); })
-	        .style("stroke-width", 0.5)
+			        // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
+			        .style("stroke", function(d) { return color(); })
+			        .style("stroke-width", 0.5)
 			// .style("fill", function(d) { return color(d.GO_ref); });
 			.style("fill", function(d) { return color(2); });
 		var labels = gnodes.append("text")
-	    	.attr("dy", ".4em")
-	    	.attr("text-anchor", "middle")
+			    	.attr("dy", ".4em")
+			    	.attr("text-anchor", "middle")
 			.style("font-size","7px")
 			.text(function(d) { return d.Entry; });
-		
-	  	  node.append("title")
-	  	      .text(function(d) { return d.Entry; });
-		
 
-  		force
-  			.links(graph.links)
-  			.nodes(graph.nodes)
-  			.start()
-  			.on("tick", tick)
+  	  node.append("title")
+  	      .text(function(d) { return d.Entry; });
+	link.style("stroke", function(e) { return color(e.state)})
+
+		force
+			.links(graph.links)
+			.nodes(graph.nodes)
+			.on("tick", tick)			
+			// .start()
+			// .on("tick", tick)
 		
-		function tick() {
-		  link.attr("x1", function(d) { return d.source.x; })
-		      .attr("y1", function(d) { return d.source.y; })
-		      .attr("x2", function(d) { return d.target.x; })
-		      .attr("y2", function(d) { return d.target.y; });
-			
-			
+	    function tick() {
 			gnodes.attr("transform", function(d) {
 				return "translate(" + d.x + "," + d.y + ")";
-			});			  
+			});
+	        link.attr("d", function(d) {
+	            var dx = d.target.x - d.source.x,
+	                dy = d.target.y - d.source.y,
+	                dr = 0,
+					arc = 1;
+	            // get the total link numbers between source and target node
+	            var lTotalLinkNum = mLinkNum[d.source.index+ "," + d.target.index] || mLinkNum[d.target.index + "," + d.source.index];
+				if(lTotalLinkNum > 1){
+	                dr = Math.sqrt(dx * dx + dy * dy);
+					lTotalLinkNum = Math.round((lTotalLinkNum/2)-0.1)
+					if(d.linkindex % 2 == 0){
+						arc=0;
+						// if there are multiple links between these two nodes, we need generate different dr for each path
+						dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex)/2 - 1)) - 0.2);
+	                }else{
+						dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex+1)/2 - 1)) - 0.2);
+	                }
+
+	            }
+	            // generate svg path
+	            return "M" + d.source.x + "," + d.source.y + 
+	                "A" + dr + "," + dr + " 0 0 "+arc+"," + d.target.x + "," + d.target.y;
+	        });
 		}
+		
+		// jQuery.grep(test.links, function(obj) {
+		// 	if(obj.state == "5"){return(obj.linkindex)};
+		// });
+
+		//
+		// link = link.data(graph.links)
+		// 	        .enter().append("svg:line")
+		// 	      	// .style("stroke-width", function(d) { return d.accumulated+1; })
+		// 	        .attr("class", "link")
+		// 	.on("click",lover);
+		//
+		// gnodes = gnodes.data(graph.nodes)
+		// 	.enter()
+		// 	.append('g')
+		// 	// .call(node_drag)
+		// 	.call(drag)
+		// 	.on("click",mover)
+		// 	.classed('gnode', true);
+		// var node = gnodes.append("circle")
+		// 	.attr("class", "node")
+		// 	.attr("r", r - .5)
+		// 	// .on ("mouseout",mout)
+		// 	.attr('main', function(d) {return d.Entry})
+		// 	        // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
+		// 	        .style("stroke", function(d) { return color(); })
+		// 	        .style("stroke-width", 0.5)
+		// 	// .style("fill", function(d) { return color(d.GO_ref); });
+		// 	.style("fill", function(d) { return color(2); });
+		// var labels = gnodes.append("text")
+		// 	    	.attr("dy", ".4em")
+		// 	    	.attr("text-anchor", "middle")
+		// 	.style("font-size","7px")
+		// 	.text(function(d) { return d.Entry; });
+		//
+		// 	  	  node.append("title")
+		// 	  	      .text(function(d) { return d.Entry; });
+		//
+		//
+		//   		force
+		//   			.links(graph.links)
+		//   			.nodes(graph.nodes)
+		//   			.start()
+		//   			.on("tick", tick)
+		//
+		// function tick() {
+		//   link.attr("x1", function(d) { return d.source.x; })
+		//       .attr("y1", function(d) { return d.source.y; })
+		//       .attr("x2", function(d) { return d.target.x; })
+		//       .attr("y2", function(d) { return d.target.y; });
+		//
+		//
+		// 	gnodes.attr("transform", function(d) {
+		// 		return "translate(" + d.x + "," + d.y + ")";
+		// 	});
+		// }
 		
 							    
 		function mover(d,i) {
@@ -288,9 +380,84 @@
 			}
 	    }
 		
-		
 		$('.progress-bar').attr('aria-valuetransitiongoal', 100).progressbar();	  
 		
+		//Get all the states and fill panel with states
+		var states = [];
+		$.each(graph.links, function(i,value){states.push(parseInt(value.state))})
+		var uniquestates=states.filter(function(itm,i,a){
+		    return i==a.indexOf(itm);
+		});
+		uniquestates = uniquestates.sort(function(a,b){return a-b})
+		$.each(uniquestates, function(i,state){
+			var elementId = "id"+state;
+			var checkboxContainer = $('<div></div>')
+				.addClass('checkbox')
+				.attr("id", elementId)
+			var labelContainer = $('<label></label>').text("State " + state)
+		        .append($('<input></input>')
+					.prop('type', 'checkbox')
+					.change(function() {
+						var checkedValues = $('input:checkbox:checked').map(function() {
+						    return this.value;
+						}).get();
+						minLinks=test.links.filter(function(d){
+							if($.inArray(d.state, checkedValues) != -1){
+								return d
+							}
+						});
+						minLinks=sortLinks(minLinks);
+						 
+					    // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
+						mLinkNum=[];
+					    var indexAndNum =setLinkIndexAndNum(minLinks);
+						minLinks=indexAndNum[0];
+						mLinkNum = indexAndNum[1];		
+						force.links(minLinks);
+						
+						var newPath=link.data(minLinks);
+						newPath
+							.enter().append("svg:path")
+					      	// .style("stroke-width", function(d) { return d.accumulated+1; })
+					        .attr("class", "link")
+					        .attr("fill", "none")
+				  			.on("click",lover);
+						newPath.exit().remove();
+						force.start();												
+						
+						// minLinks=sortLinks(minLinks);
+						// 					    // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
+						// 					    mLinkNum =setLinkIndexAndNum(minLinks)[1];
+						//
+						// link.data(minLinks)
+						// force.links(minLinks);
+						// force.start();
+					})
+					.prop("checked", true).val(state))
+				.attr("width","50px")
+				.attr("height","10px");
+	        checkboxContainer.append(labelContainer);
+			$("#mainpanel").append(checkboxContainer);
+			var hashedid = "#"+elementId;
+			var rect = d3.select(String(hashedid))
+				  .append("svg")
+				  .attr("width", 60)
+				  .attr("height", 10);
+				  rect.append("svg:line")
+				.attr("x1", 10)
+				.attr("y1", 0)
+				.attr("x2", 60)
+				.attr("y2", 0)
+				.attr("stroke-width", 5)				
+				.style("stroke", color(parseInt(state)))
+				
+				$("input.box").change(function() {
+					console.log("test");
+				  alert( "Handler for .change() called." );
+				});
+				
+		})		
+							
 		// Use a timeout to allow the rest of the page to load first.
 		setTimeout(function() {
  
@@ -339,10 +506,82 @@
 
 			// force.start();
 			// tick();
-			// force.stop() // stops the force auto positioning before you start dragging
+		    force.start();
+		    for (var i = n * n; i > 0; --i) force.tick();
+			force.stop() // stops the force auto positioning before you start dragging
 
 			// vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
 			$("#loadingCon").fadeOut();
+			$("#mainpanel").fadeIn();
 			
-		}, 10);
+			
+		}, 50);
+		
+	    // sort the links by source, then target
+	    function sortLinks(links){								
+	        links.sort(function(a,b) {
+	            if (a.source > b.source) 
+	            {
+	                return 1;
+	            }
+	            else if (a.source < b.source) 
+	            {
+	                return -1;
+	            }
+	            else 
+	            {
+	                if (a.target > b.target) 
+	                {
+	                    return 1;
+	                }
+	                if (a.target < b.target) 
+	                {
+	                    return -1;
+	                }
+	                else 
+	                {
+	                    return 0;
+	                }
+	            }
+	        });
+			return(links)
+	    }
+    
+	    //any links with duplicate source and target get an incremented 'linknum'
+	    function setLinkIndexAndNum(links){
+	        for (var i = 0; i < links.length; i++) 
+	        {
+				var source = links[i].source,
+					target = links[i].target;
+				if(parseInt(source) !== source){
+					source = links[i].source.index;
+					target = links[i].target.index;
+				}		
+	            if (i != 0 &&
+	                links[i].source == links[i-1].source &&
+	                links[i].target == links[i-1].target) 
+	            {
+	                links[i].linkindex = links[i-1].linkindex + 1;
+	            }
+	            else 
+	            {
+	                links[i].linkindex = 1;
+	            }
+	            // save the total number of links between two nodes
+	            if(mLinkNum[target + "," + source] !== undefined)
+	            {
+	                mLinkNum[target + "," + source] = links[i].linkindex;
+	            }
+	            else
+	            {
+	                mLinkNum[source + "," + target] = links[i].linkindex;
+	            }
+	        }
+			return [links,mLinkNum];
+	    }	
+		
 	});
+	
+	
+	// $(document).ready(function() {
+	// });

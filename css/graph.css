@@ -49,3 +49,17 @@ div.pop-img {
 div.pop-desc {
 	width: 150px;
 }
+
+#mainpanel {
+    margin-top: 65px;
+    margin-left: 5px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-bottom: 0;
+    background-color: rgba(255, 255, 255, .6);
+    z-index: 20;
+    position:fixed;
+	top:0;
+    right:25px;
+    border: 1px solid #a6a6a6
+}
