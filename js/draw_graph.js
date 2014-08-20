@@ -26,7 +26,6 @@
 	var minLinks={};
 	
 	var test;
-	
     var zoom = d3.behavior.zoom()
         .scaleExtent([0.5, 10])
         .on("zoom", zoomed);
@@ -153,22 +152,21 @@
 	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
 		test = graph;
-	    // sort links first
-	    graph.links=sortLinks(graph.links);								
- 
-	    // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
-	    var indexAndNum =setLinkIndexAndNum(graph.links);
-		graph.links=indexAndNum[0];
-		mLinkNum = indexAndNum[1];		
-		
+    // sort links first
+    graph.links=sortLinks(graph.links);								
+    
+    // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
+    var indexAndNum =setLinkIndexAndNum(graph.links);
+  		graph.links=indexAndNum[0];
+  		mLinkNum = indexAndNum[1];		
+		        
 		//Starting with the graph			
-  		link = link.data(graph.links)
-	        .enter().append("svg:path")
-	      	// .style("stroke-width", function(d) { return d.accumulated+1; })
-	        .attr("class", "link")
-	        .attr("fill", "none")
-  			.on("click",lover);
-		
+		link = link.data(graph.links)
+        .enter().append("svg:path")
+      	// .style("stroke-width", function(d) { return d.accumulated+1; })
+        .attr("class", "link")
+        .attr("fill", "none");
+          
 		gnodes = gnodes.data(graph.nodes)
 			.enter()
 			.append('g')
@@ -189,48 +187,53 @@
 		var labels = gnodes.append("text")
 			    	.attr("dy", ".4em")
 			    	.attr("text-anchor", "middle")
-			.style("font-size","7px")
+			.style("font-size","8px")
 			.text(function(d) { return d.Entry; });
-
-  	  node.append("title")
-  	      .text(function(d) { return d.Entry; });
-	link.style("stroke", function(e) { return color(e.state)})
+    
+    // link.style("stroke", function(e) { return color(e.state)})
+    //     .on("click",function(e){console.log(e.state)});
+    
+    link.on("click",function(e){lover(e)})
+      .style("stroke", function(d) { return color(parseInt(d.state)) });
+    
+    node.append("title")
+	      .text(function(d) { return d.Entry; });
 
 		force
 			.links(graph.links)
 			.nodes(graph.nodes)
 			.on("tick", tick)			
-			// .start()
-			// .on("tick", tick)
 		
 	    function tick() {
-			gnodes.attr("transform", function(d) {
-				return "translate(" + d.x + "," + d.y + ")";
-			});
-	        link.attr("d", function(d) {
-	            var dx = d.target.x - d.source.x,
-	                dy = d.target.y - d.source.y,
-	                dr = 0,
-					arc = 1;
-	            // get the total link numbers between source and target node
-	            var lTotalLinkNum = mLinkNum[d.source.index+ "," + d.target.index] || mLinkNum[d.target.index + "," + d.source.index];
-				if(lTotalLinkNum > 1){
-	                dr = Math.sqrt(dx * dx + dy * dy);
-					lTotalLinkNum = Math.round((lTotalLinkNum/2)-0.1)
-					if(d.linkindex % 2 == 0){
-						arc=0;
-						// if there are multiple links between these two nodes, we need generate different dr for each path
-						dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex)/2 - 1)) - 0.2);
-	                }else{
-						dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex+1)/2 - 1)) - 0.2);
-	                }
-
-	            }
-	            // generate svg path
-	            return "M" + d.source.x + "," + d.source.y + 
-	                "A" + dr + "," + dr + " 0 0 "+arc+"," + d.target.x + "," + d.target.y;
-	        });
-		}
+        //Nodes
+        gnodes.attr("transform", function(d) {
+          return "translate(" + d.x + "," + d.y + ")";
+        });
+        // Links
+        link.attr("d", function(d) {
+          var dx = d.target.x - d.source.x,
+              dy = d.target.y - d.source.y,
+              dr = 0,
+              arc = 1;
+          // get the total link numbers between source and target node
+          var lTotalLinkNum = mLinkNum[d.source.index+ "," + d.target.index] || mLinkNum[d.target.index + "," + d.source.index];
+          if(lTotalLinkNum > 1){
+            dr = Math.sqrt(dx * dx + dy * dy);
+            lTotalLinkNum = Math.round((lTotalLinkNum/2)-0.1)
+            if(d.linkindex % 2 == 0){
+              arc=0;
+              // if there are multiple links between these two nodes, we need generate different dr for each path
+              dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex)/2 - 1)) - 0.2);
+            }else{
+              dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex+1)/2 - 1)) - 0.2);
+            }
+          }
+          // generate svg path
+          return "M" + d.source.x + "," + d.source.y + 
+                  "A" + dr + "," + dr + " 0 0 "+arc+ "," + d.target.x + "," + d.target.y +
+                  "A" + dr + "," + dr + " 0 0 "+(1-arc)+ "," + d.source.x + "," + d.source.y;
+        });
+    }
 		
 		// jQuery.grep(test.links, function(obj) {
 		// 	if(obj.state == "5"){return(obj.linkindex)};
@@ -291,93 +294,97 @@
 							    
 		function mover(d,i) {
 	        $(".pop-up").fadeOut(50);
-			if(d.name != previousd){
-				previousd = d.name;
-		        $("#pop-up-node").fadeOut(100,function () {
-		            // Popup content
-		            // $("#node-title").html(d.main + " (" + d.name + ")");
-		            // $("#nodename").html(d.Protein_names);
-		            $("#uniprot").html(d.Entry);
-		            // $("#gofun").html(d.GO_ref);
-		            // $("#gofundesc").html(d.GOref_description);
-					// var enrichpval;
-					// if(d.reference_pval == "NA"){
-					// 	enrichpval="NA"
-					// }else{
-					// 	enrichpval=parseFloat(d.reference_pval.toPrecision(5));
-					// }
-					// $("#gofunpval").html(enrichpval) ;
-					//
-		            // Popup position
-		            var popLeft = (d.x*scale) + thewidth/2 - centerx + trans[0];//lE.cL[0] + 20;
-		            var popTop = (d.y*scale) + theheight/2 - centery + trans[1];//lE.cL[1] + 70;
-		            $("#pop-up-node").css({"left":popLeft,"top":popTop});
-		            $("#pop-up-node").fadeIn(100);
-		        });
-			}else{
-				previousd = "";
-			}
+      // if(d.name != previousd){
+      //   previousd = d.name;
+      //             $("#pop-up-node").fadeOut(100,function () {
+      //                 // Popup content
+      //                 // $("#node-title").html(d.main + " (" + d.name + ")");
+      //                 // $("#nodename").html(d.Protein_names);
+      //                 $("#uniprot").html(d.Entry);
+      //                 // $("#gofun").html(d.GO_ref);
+      //                 // $("#gofundesc").html(d.GOref_description);
+      //     // var enrichpval;
+      //     // if(d.reference_pval == "NA"){
+      //     //   enrichpval="NA"
+      //     // }else{
+      //     //   enrichpval=parseFloat(d.reference_pval.toPrecision(5));
+      //     // }
+      //     // $("#gofunpval").html(enrichpval) ;
+      //     //
+      //                 // Popup position
+      //                 // var popLeft = (d.x*scale) + thewidth/2 - centerx + trans[0];//lE.cL[0] + 20;
+      //                 // var popTop = (d.y*scale) + theheight/2 - centery + trans[1];//lE.cL[1] + 70;
+      //                 // $("#pop-up-node").css({"left":popLeft,"top":popTop});
+      //                 // $("#pop-up-node").fadeIn(100);
+      //             });
+      // }else{
+      //   previousd = "";
+      // }
 	    }
 		
 		
 	    function lover(d,i) {
-	        $(".pop-up").fadeOut(50);
-			if(d.name != previousd){
-				previousd = d.name;
-		        $("#pop-up-link").fadeOut(100,function () {
-		            // Popup content
-					// 		            $("#link-title").html("Interaction: " + d.name);
-					// $("#orthologs").html(d.n);
-					// $("#mt").html(Math.round(d.r).toFixed(5));
-					// var pval;
-					// if(d.p_value == 0){
-					// 	pval="< 1E-3";
-					// }else{
-					// 	pval=d.p_value;
-					// }
-					// $("#pMT").html(pval);
-					// $("#context").html(d.context_lvl10);
-					// var binary,complex,kpath,ecopath,reg;
-					// if(d.binary_physical == "NA"){
-					// 	binary="&#10008";
-					// }else{
-					// 	binary="&#10004";
-					// }
-					// if(d.ecocyc_complexes == "NA"){
-					// 	complex="&#10008";
-					// }else{
-					// 	complex="&#10004";
-					// }
-					// if(d.kegg_pathways == "NA"){
-					// 	kpath="&#10008";
-					// }else{
-					// 	kpath="&#10004";
-					// }
-					// if(d.ecocyc_pathways == "NA"){
-					// 	ecopath="&#10008";
-					// }else{
-					// 	ecopath="&#10004";
-					// }
-					// if(d.ecocyc_regulation == "NA"){
-					// 	reg="&#10008";
-					// }else{
-					// 	reg="&#10004";
-					// }
-					// $("#binary_physical").html(binary);
-					// $("#ecocyc_complexes").html(complex);
-					// $("#kegg_pathways").html(kpath);
-					// $("#ecocyc_pathways").html(ecopath);
-					// $("#ecocyc_regulation").html(reg);
-					//
-					// 		            // Popup position
-					// 		            var popLeft = (((d.source.x + d.target.x)/2)*scale)+thewidth/2-centerx+trans[0];//lE.cL[0] + 20;
-					// 		            var popTop = (((d.source.y + d.target.y)/2)*scale)+theheight/2-centery+trans[1]+20;//lE.cL[1] + 70;
-					// 		            $("#pop-up-link").css({"left":popLeft,"top":popTop});
-					// 		            $("#pop-up-link").fadeIn(100);
-		        });
-			}else{
-				previousd = "";
-			}
+        $(".pop-up").fadeOut(50);
+        console.log(d.state);
+        var thisd = d.source.index + "-" + d.target.index;
+    		if(thisd != previousd){
+    			previousd = thisd;
+	        $("#pop-up-link").fadeOut(100,function () {
+              // Popup content
+              $("#link-title").html("Interaction: " + d.state);
+    				// $("#orthologs").html(d.n);
+    				// $("#mt").html(Math.round(d.r).toFixed(5));
+    				// var pval;
+    				// if(d.p_value == 0){
+    				// 	pval="< 1E-3";
+    				// }else{
+    				// 	pval=d.p_value;
+    				// }
+    				// $("#pMT").html(pval);
+    				// $("#context").html(d.context_lvl10);
+    				// var binary,complex,kpath,ecopath,reg;
+    				// if(d.binary_physical == "NA"){
+    				// 	binary="&#10008";
+    				// }else{
+    				// 	binary="&#10004";
+    				// }
+    				// if(d.ecocyc_complexes == "NA"){
+    				// 	complex="&#10008";
+    				// }else{
+    				// 	complex="&#10004";
+    				// }
+    				// if(d.kegg_pathways == "NA"){
+    				// 	kpath="&#10008";
+    				// }else{
+    				// 	kpath="&#10004";
+    				// }
+    				// if(d.ecocyc_pathways == "NA"){
+    				// 	ecopath="&#10008";
+    				// }else{
+    				// 	ecopath="&#10004";
+    				// }
+    				// if(d.ecocyc_regulation == "NA"){
+    				// 	reg="&#10008";
+    				// }else{
+    				// 	reg="&#10004";
+    				// }
+    				// $("#binary_physical").html(binary);
+    				// $("#ecocyc_complexes").html(complex);
+    				// $("#kegg_pathways").html(kpath);
+    				// $("#ecocyc_pathways").html(ecopath);
+    				// $("#ecocyc_regulation").html(reg);
+    				//
+            // Popup position
+            var popLeft = (d.source.x*scale)+trans[0]+20;//lE.cL[0] + 20;
+            var popTop = (d.source.y*scale)+trans[1]+20;//lE.cL[1] + 70;
+            // var popLeft = (((d.source.x + d.target.x)/2)*scale)+thewidth/2-centerx+trans[0];//lE.cL[0] + 20;
+            // var popTop = (((d.source.y + d.target.y)/2)*scale)+theheight/2-centery+trans[1]+20;//lE.cL[1] + 70;
+            $("#pop-up-link").css({"left":popLeft,"top":popTop});
+              $("#pop-up-link").fadeIn(100);
+  	        });
+    		}else{
+    			previousd = "";
+    		}
 	    }
 		
 		$('.progress-bar').attr('aria-valuetransitiongoal', 100).progressbar();	  
@@ -398,7 +405,11 @@
 		        .append($('<input></input>')
 					.prop('type', 'checkbox')
 					.change(function() {
-						var checkedValues = $('input:checkbox:checked').map(function() {
+            //
+            //Preparing new list of links
+						//
+            minLinks=[];
+            var checkedValues = $('input:checkbox:checked').map(function() {
 						    return this.value;
 						}).get();
 						minLinks=test.links.filter(function(d){
@@ -406,36 +417,29 @@
 								return d
 							}
 						});
-						minLinks=sortLinks(minLinks);
+						minLinks=sortLinksIndex(minLinks);
 						 
-					    // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
+					  // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
 						mLinkNum=[];
-					    var indexAndNum =setLinkIndexAndNum(minLinks);
-						minLinks=indexAndNum[0];
-						mLinkNum = indexAndNum[1];		
+				    var indexAndNum =setLinkIndexAndNum(minLinks);
+  						minLinks=indexAndNum[0];
+  						mLinkNum = indexAndNum[1];
 						force.links(minLinks);
 						
-						var newPath=link.data(minLinks);
-						newPath
-							.enter().append("svg:path")
-					      	// .style("stroke-width", function(d) { return d.accumulated+1; })
-					        .attr("class", "link")
-					        .attr("fill", "none")
-				  			.on("click",lover);
-						newPath.exit().remove();
-						force.start();												
-						
-						// minLinks=sortLinks(minLinks);
-						// 					    // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
-						// 					    mLinkNum =setLinkIndexAndNum(minLinks)[1];
-						//
-						// link.data(minLinks)
-						// force.links(minLinks);
-						// force.start();
+            //link representation
+        		link = link.data(minLinks)
+            link.enter().append("svg:path")
+              .attr("class", "link")
+              .attr("fill", "none")
+              .on("click",function(e){lover(e)})
+            link.style("stroke", function(d) { return color(parseInt(d.state)) })
+            link.exit().remove();
+            keepNodesOnTop();            
+						force.start();														
 					})
 					.prop("checked", true).val(state))
-				.attr("width","50px")
-				.attr("height","10px");
+  				.attr("width","50px")
+  				.attr("height","10px");
 	        checkboxContainer.append(labelContainer);
 			$("#mainpanel").append(checkboxContainer);
 			var hashedid = "#"+elementId;
@@ -449,13 +453,7 @@
 				.attr("x2", 60)
 				.attr("y2", 0)
 				.attr("stroke-width", 5)				
-				.style("stroke", color(parseInt(state)))
-				
-				$("input.box").change(function() {
-					console.log("test");
-				  alert( "Handler for .change() called." );
-				});
-				
+				.style("stroke", color(parseInt(state)))				
 		})		
 							
 		// Use a timeout to allow the rest of the page to load first.
@@ -518,7 +516,7 @@
 		}, 50);
 		
 	    // sort the links by source, then target
-	    function sortLinks(links){								
+	    function sortLinks(links){							
 	        links.sort(function(a,b) {
 	            if (a.source > b.source) 
 	            {
@@ -546,17 +544,44 @@
 	        });
 			return(links)
 	    }
-    
+	    // sort the links by source, then target
+	    function sortLinksIndex(links){							
+	        links.sort(function(a,b) {
+	            if (a.source.index > b.source.index) 
+	            {
+	                return 1;
+	            }
+	            else if (a.source.index < b.source.index) 
+	            {
+	                return -1;
+	            }
+	            else 
+	            {
+	                if (a.target.index > b.target.index) 
+	                {
+	                    return 1;
+	                }
+	                if (a.target.index < b.target.index) 
+	                {
+	                    return -1;
+	                }
+	                else 
+	                {
+	                    return 0;
+	                }
+	            }
+	        });
+			return(links)
+	    }
 	    //any links with duplicate source and target get an incremented 'linknum'
 	    function setLinkIndexAndNum(links){
-	        for (var i = 0; i < links.length; i++) 
-	        {
-				var source = links[i].source,
-					target = links[i].target;
-				if(parseInt(source) !== source){
-					source = links[i].source.index;
-					target = links[i].target.index;
-				}		
+	        for (var i = 0; i < links.length; i++){
+      				var source = links[i].source,
+      					target = links[i].target;
+      				if(parseInt(source) !== source){
+      					source = links[i].source.index;
+      					target = links[i].target.index;
+      				}		
 	            if (i != 0 &&
 	                links[i].source == links[i-1].source &&
 	                links[i].target == links[i-1].target) 
@@ -582,6 +607,12 @@
 		
 	});
 	
+  function keepNodesOnTop() {
+      $(".node").each(function( index ) {
+          var gnode = this.parentNode;
+          gnode.parentNode.appendChild(gnode);
+      });
+  }
 	
 	// $(document).ready(function() {
 	// });
