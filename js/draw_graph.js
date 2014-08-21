@@ -53,7 +53,7 @@
 		});	
 	
 	var force = d3.layout.force()
-	    .linkDistance(100)
+	    .linkDistance(200)
 	    .charge(-400)
 	    // .linkDistance(10)
 	    // .linkStrength(2)
@@ -174,20 +174,23 @@
 			.call(drag)
 			.on("click",mover)
 			.classed('gnode', true);
-		var node = gnodes.append("circle")
+		var node = gnodes.append("path")
 			.attr("class", "node")
-			.attr("r", r - .5)
+      .attr("d", d3.svg.symbol()
+          .size("400")
+          .type(function(d) { return d3.svg.symbolTypes[parseInt(d.shape)]; }))
+      // .attr("r", r - .5)
 			// .on ("mouseout",mout)
 			.attr('main', function(d) {return d.Entry})
 			        // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
 			        .style("stroke", function(d) { return color(); })
 			        .style("stroke-width", 0.5)
 			// .style("fill", function(d) { return color(d.GO_ref); });
-			.style("fill", function(d) { return color(2); });
+			.style("fill", function(d) { return color(parseInt(d.shape)); });
 		var labels = gnodes.append("text")
 			    	.attr("dy", ".4em")
 			    	.attr("text-anchor", "middle")
-			.style("font-size","8px")
+			.style("font-size","9px")
 			.text(function(d) { return d.Entry; });
     
     // link.style("stroke", function(e) { return color(e.state)})
