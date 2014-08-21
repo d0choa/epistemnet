@@ -5,6 +5,12 @@ use JSON::XS;
 
 my $statesFile = $ARGV[0];
 my $netOrnodes = $ARGV[1];
+my $nodeInfoCytoscape = $ARGV[2];
+
+my %histoneMods = ("H3K9me3",1, "H3K9ac",1, "H3K27ac",1,"H3K79me2",1,"H3K27me3",1,
+"H3K4me2",1,"H3K36me2",1,"H3K36me3",1,"H4K20me3",1,"H3K4me3",1,"H3K4me1",1);
+
+my %dnaMeth = ("5fC",1,"5hmC",1,"5mC",1);
 
 open(STATESFILE, $statesFile);
 my @stateslines = <STATESFILE>;
@@ -51,6 +57,7 @@ if($netOrnodes eq "net"){
 		my %thisnode;
 		$thisnode{"Entry"}=$nodename;
 		$thisnode{"index"}=$nodeIndex{$nodename};
+    $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
 		push(@nodes,\%thisnode);
 	}
 
@@ -78,8 +85,23 @@ if($netOrnodes eq "net"){
 		$thisnode{"description"}=$nodename;
 		$thisnode{"value"}=$nodename;
 		$thisnode{"tokens"}=$nodename;
+    $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
 		push(@nodes,\%thisnode);
 	}
 	my %result;
 	print encode_json(\@nodes);
+}
+
+sub getShape{
+  my $id=$_[0];
+  my %histoneMods = %{$_[1]};
+  my %dnaMeth = %{$_[2]};
+  
+  if(defined($histoneMods{$id})){
+    return("3");
+  }elsif(defined($dnaMeth{$id})){
+    return("2");
+  }else{
+    return("6");
+  }
 }
