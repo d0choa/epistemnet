@@ -53,8 +53,8 @@
 		});	
 	
 	var force = d3.layout.force()
-	    .linkDistance(200)
-	    .charge(-400)
+      // .linkDistance(200)
+      .charge(-2500)
 	    // .linkDistance(10)
 	    // .linkStrength(2)
 	    .size([thewidth, theheight])
