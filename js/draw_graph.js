@@ -166,6 +166,7 @@
 		link = link.data(graph.links)
         .enter().append("svg:path")
         .attr("class", function(d) {return "link " + d.type;})
+        .style('stroke-width', 1.5)
         .attr("fill", "none");
           
 		gnodes = gnodes.data(graph.nodes)
