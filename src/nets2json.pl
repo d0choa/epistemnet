@@ -49,17 +49,44 @@ for(my $i=1; $i<scalar(@stateslines);$i++){
 	}
 }
 
+my $histoneTotal=0;
+my $methylTotal=0;
+foreach my $nodename (@nodenames){
+  my $type = getType($nodename, \%histoneMods, \%dnaMeth);
+  if($type eq "histone"){
+    $histoneTotal++;
+  }elsif($type eq "methylation"){
+    $methylTotal++;
+  }
+}
 
 # Printing
 if($netOrnodes eq "net"){
 	my @nodes;
-	foreach my $nodename (@nodenames){
+  my %typeCounter;
+  foreach my $nodename (@nodenames){
 		my %thisnode;
 		$thisnode{"Entry"}=$nodename;
 		$thisnode{"index"}=$nodeIndex{$nodename};
     $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"size"}=getSize($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"fixed"}=getFixed($nodename, \%histoneMods, \%dnaMeth);
+    my $type = getType($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"type"}= $type;
+    if(!defined($typeCounter{$type})){
+      $typeCounter{$type}=1;
+    }else{
+      $typeCounter{$type} = $typeCounter{$type}+1;
+    }
+    if($type eq "histone"){
+      $thisnode{"y"}=(($typeCounter{$type}/($histoneTotal + 2)) + (0.5 / ($histoneTotal+2)));
+    }elsif($type eq "methylation"){
+      $thisnode{"y"}=(($typeCounter{$type}/($methylTotal+ 2)) + (0.5 / ($methylTotal+2)));
+    }else{
+      $thisnode{"y"}=0.5;
+    }
+    $thisnode{"x"}=getX($nodename, \%histoneMods, \%dnaMeth);
 		push(@nodes,\%thisnode);
 	}
 
@@ -87,7 +114,9 @@ if($netOrnodes eq "net"){
 	print encode_json(\%result);
 }elsif($netOrnodes eq "nodes"){
 	my @nodes;
-	foreach my $nodename (@nodenames){
+  my %typeCounter;
+  for(my $i=0;$i<scalar(@nodenames);$i++){
+    my $nodename = $nodenames[$i];
 		my %thisnode;
 		$thisnode{"description"}=$nodename;
 		$thisnode{"value"}=$nodename;
@@ -97,7 +126,24 @@ if($netOrnodes eq "net"){
     $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"size"}=getSize($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"fixed"}=getFixed($nodename, \%histoneMods, \%dnaMeth);
+    my $type = getType($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"type"}= $type;
+    if(!defined($typeCounter{$type})){
+      $typeCounter{$type}=1;
+    }else{
+      $typeCounter{$type} = $typeCounter{$type}+1;
+    }
+    if($type eq "histone"){
+      $thisnode{"y"}=(($typeCounter{$type}/($histoneTotal + 2)) + (0.5 / ($histoneTotal+2)));
+    }elsif($type eq "methylation"){
+      $thisnode{"y"}=(($typeCounter{$type}/($methylTotal+ 2)) + (0.5 / ($methylTotal+2)));
+    }else{
+      $thisnode{"y"}=0.5;
+    }
+    $thisnode{"x"}=getX($nodename, \%histoneMods, \%dnaMeth);
 		push(@nodes,\%thisnode);
+      push(@nodes,\%thisnode);
 	}
 	my %result;
 	print encode_json(\@nodes);
@@ -123,9 +169,9 @@ sub getSize{
   my %dnaMeth = %{$_[2]};
   
   if(defined($histoneMods{$id})){
-    return("450");
+    return("600");
   }elsif(defined($dnaMeth{$id})){
-    return("450");
+    return("600");
   }else{
     return("300");
   }
@@ -142,5 +188,46 @@ sub getColor{
     return("1");
   }else{
     return("2");
+  }
+}
+
+sub getType{
+  my $id=$_[0];
+  my %histoneMods = %{$_[1]};
+  my %dnaMeth = %{$_[2]};
+  
+  if(defined($histoneMods{$id})){
+    return("histone");
+  }elsif(defined($dnaMeth{$id})){
+    return("methylation");
+  }else{
+    return("proteins");
+  }
+}
+
+sub getX{
+  my $id=$_[0];
+  my %histoneMods = %{$_[1]};
+  my %dnaMeth = %{$_[2]};
+  
+  if(defined($histoneMods{$id})){
+    return(0.25);
+  }elsif(defined($dnaMeth{$id})){
+    return(0.75);
+  }else{
+    return(0.5);
+  }
+}
+
+
+sub getFixed{
+  my $id=$_[0];
+  my %histoneMods = %{$_[1]};
+  my %dnaMeth = %{$_[2]};
+  
+  if(defined($histoneMods{$id}) || defined($dnaMeth{$id})){
+    return(bless( do{\(my $o = 1)}, 'JSON::XS::Boolean' ));
+  }else{
+    return(bless( do{\(my $o = 0)}, 'JSON::XS::Boolean' ));
   }
 }
