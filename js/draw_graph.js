@@ -173,9 +173,11 @@
 			.append('g')
 			.call(drag)
 			.on("click",mover)
-			.classed('gnode', true);
+      .classed('gnode', true);
+      
 		var node = gnodes.append("path")
-			.attr("class", "node")
+      .attr("class", function(d) {return "node " + d.type;})    
+      // .attr("class", "node")
       .attr("d", d3.svg.symbol()
           .size(function(d) { return parseInt(d.size);})
           .type(function(d) { return d3.svg.symbolTypes[parseInt(d.shape)]; }))
@@ -190,7 +192,7 @@
 		var labels = gnodes.append("text")
     	.attr("dy", ".4em")
     	.attr("text-anchor", "middle")
-			.style("font-size","9px")
+			.style("font-size","12px")
 			.text(function(d) { return d.Entry; });
         
     link.on("click",function(e){lover(e)})
@@ -204,7 +206,7 @@
 			.nodes(graph.nodes)
 			.on("tick", tick)			
 		
-	    function tick() {
+	    function tick() {                
         //Nodes
         gnodes.attr("transform", function(d) {
           return "translate(" + d.x + "," + d.y + ")";
@@ -458,7 +460,10 @@
 							
 		// Use a timeout to allow the rest of the page to load first.
 		setTimeout(function() {
- 
+			gnodes.attr("transform", function(d) {
+        d.x = d.x * thewidth;
+        d.y = d.y * theheight; 
+      })
 		  // Run the layout a fixed number of times.
 		  // The ideal number of times scales with graph complexity.
 		  // Of course, don't run too long—you'll hang the page!
@@ -469,38 +474,39 @@
 			// 		      .attr("x2", function(d) { return d.target.x; })
 			// 		      .attr("y2", function(d) { return d.target.y; });
 			//
-			// var allxs=0;
-			// var counter=0;
-			// var allys=0;
-			// gnodes.attr("transform", function(d) {
-			// 	allxs = allxs + d.x;
-			// 	allys = allys + d.y;
-			// 	counter++;
-			//     		});
-			//  			centerx = allxs/counter;
-			// centery = allys/counter;
-			//
-			// var minx=0;
-			// var maxx=0;
-			// var miny=0;
-			// var maxy=0;
-			// gnodes.attr("transform", function(d) {
-			// 	if(minx > d.x){
-			// 		minx = d.x
-			// 	}
-			// 	if(maxx < d.x){
-			// 		maxx = d.x
-			// 	}
-			// 	if(miny > d.y){
-			// 		miny = d.y
-			// 	}
-			// 	if(maxy < d.y){
-			// 		maxy = d.y
-			// 	}
-			//     		});
-			// rect.attr('width', (Math.abs(minx) + Math.abs(maxx)))
-			// rect.attr('height', (Math.abs(miny) + Math.abs(maxy)))
-			// rect.attr("transform","translate(" + [minx, miny] + ")"+" scale(" + scale + ")");
+      // var allxs=0;
+      // var counter=0;
+      // var allys=0;
+      // gnodes.attr("transform", function(d) {
+      //   allxs = allxs + d.x;
+      //   allys = allys + d.y;
+      //   counter++;
+      // });
+      // centerx = allxs/counter;
+      // centery = allys/counter;
+      //
+      // var minx=0;
+      // var maxx=0;
+      // var miny=0;
+      // var maxy=0;
+      // gnodes.attr("transform", function(d) {
+      //   if(minx > d.x){
+      //     minx = d.x
+      //   }
+      //   if(maxx < d.x){
+      //     maxx = d.x
+      //   }
+      //   if(miny > d.y){
+      //     miny = d.y
+      //   }
+      //   if(maxy < d.y){
+      //     maxy = d.y
+      //   }
+      // });
+      // console.log(maxx)
+      // rect.attr('width', (Math.abs(minx) + Math.abs(maxx)))
+      // rect.attr('height', (Math.abs(miny) + Math.abs(maxy)))
+      // rect.attr("transform","translate(" + [minx, miny] + ")"+" scale(" + scale + ")");
 
 			// force.start();
 			// tick();
