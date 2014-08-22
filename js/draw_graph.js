@@ -59,8 +59,8 @@
 	    // .linkStrength(2)
 	    .size([thewidth, theheight])
 	
-  // var drag = force.drag()
-  //     .on("dragstart", dragstart);
+  var drag = force.drag()
+      .on("dragstart", dragstart);
 	  
 	var link = vis.selectAll(".link"),
 	    gnodes = vis.selectAll(".node");
@@ -72,7 +72,13 @@
 	// 	scale=d3.event.scale;
 	// 	vis.attr("transform","translate(" + [thewidth/2 + trans[0] - centerx, theheight/2 + trans[1] - centery] + ")"+" scale(" + scale + ")");
 	// }
-	  
+	
+  	
+	function dragstart(d, i) {
+	    d3.select(this).classed("fixed", d.fixed = true);
+        $(".pop-up").fadeOut(50);
+	}
+  
 	function updateWindow(){
 		thewidth = w.innerWidth || e.clientWidth || g.clientWidth;
 		theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
@@ -145,31 +151,7 @@
 		}
 	}
 	
-	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
-		//Dragging functions
-  	var node_drag = d3.behavior.drag()
-  	    .on("dragstart", dragstart)
-        .on("drag", dragmove)
-  	    .on("dragend", dragend);
-    
-    	function dragstart(d, i) {
-        force.stop() // stops the force auto positioning before you start dragging
-        $(".pop-up").fadeOut(50);
-    	}
-
-    	function dragmove(d, i) {
-        d.px += d3.event.dx;
-        d.py += d3.event.dy;
-        d.x += d3.event.dx;
-        d.y += d3.event.dy; 
-        tick();
-    	}
-
-    	function dragend(d, i) {
-        d3.select(this).classed("fixed", d.fixed = true);
-        $(".pop-up").fadeOut(50);
-      }
-    
+	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {    
     //Backup network
     test = graph;
     // sort links first
@@ -189,7 +171,7 @@
 		gnodes = gnodes.data(graph.nodes)
 			.enter()
 			.append('g')
-			.call(node_drag)
+			.call(drag)
 			.on("click",mover)
 			.classed('gnode', true);
 		var node = gnodes.append("path")
