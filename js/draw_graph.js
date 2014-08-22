@@ -14,7 +14,8 @@
 	var r = 9;
     var trans=[0,0];
     var scale=1;
-	var color = d3.scale.category20c();
+	var color = d3.scale.category20();
+	var nodecolor = d3.scale.category10();
 	var previousd;
 	var counter=0;
 	var centerx;
@@ -47,8 +48,8 @@
 			$(".pop-up").fadeOut(50);
 			previousd="";
 			// d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
-			d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(2); });
-			d3.selectAll('[highlighted=true]').style("stroke", function(d) { return color(); });
+			d3.selectAll('[highlighted=true]').style("fill", function(d) { return nodecolor(parseInt(d.nodecolor)); });
+			d3.selectAll('[highlighted=true]').style("stroke", function(d) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).darker(); });
 			d3.selectAll('[highlighted=true]').attr("highlighted",false);
 		});	
 	
@@ -122,8 +123,7 @@
 	function searchNodes(nodeNames){
 		// deletee previous
 		// d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
-		d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(2); });
-		d3.selectAll('[highlighted=true]').style("stroke", function(d) { return color(); });
+		d3.selectAll('[highlighted=true]').style("fill", function(d) { return nodecolor(parseInt(d.nodecolor)); });
 		d3.selectAll('[highlighted=true]').attr("highlighted",false);
 		
 		if(nodeNames != ''){
@@ -177,25 +177,22 @@
 		var node = gnodes.append("path")
 			.attr("class", "node")
       .attr("d", d3.svg.symbol()
-          .size("400")
+          .size(function(d) { return parseInt(d.size);})
           .type(function(d) { return d3.svg.symbolTypes[parseInt(d.shape)]; }))
       // .attr("r", r - .5)
 			// .on ("mouseout",mout)
 			.attr('main', function(d) {return d.Entry})
 			        // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
-			        .style("stroke", function(d) { return color(); })
+			        .style("stroke", function(d) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).darker(); })
 			        .style("stroke-width", 0.5)
 			// .style("fill", function(d) { return color(d.GO_ref); });
-			.style("fill", function(d) { return color(parseInt(d.shape)); });
+			.style("fill", function(d,i) { return nodecolor(parseInt(d.nodecolor)); });
 		var labels = gnodes.append("text")
-			    	.attr("dy", ".4em")
-			    	.attr("text-anchor", "middle")
+    	.attr("dy", ".4em")
+    	.attr("text-anchor", "middle")
 			.style("font-size","9px")
 			.text(function(d) { return d.Entry; });
-    
-    // link.style("stroke", function(e) { return color(e.state)})
-    //     .on("click",function(e){console.log(e.state)});
-    
+        
     link.on("click",function(e){lover(e)})
       .style("stroke", function(d) { return color(parseInt(d.state)) });
     
@@ -446,11 +443,11 @@
 	        checkboxContainer.append(labelContainer);
 			$("#mainpanel").append(checkboxContainer);
 			var hashedid = "#"+elementId;
-			var rect = d3.select(String(hashedid))
+			var rectpanel = d3.select(String(hashedid))
 				  .append("svg")
 				  .attr("width", 60)
 				  .attr("height", 10);
-				  rect.append("svg:line")
+				  rectpanel.append("svg:line")
 				.attr("x1", 10)
 				.attr("y1", 0)
 				.attr("x2", 60)
