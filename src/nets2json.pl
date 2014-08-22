@@ -58,6 +58,8 @@ if($netOrnodes eq "net"){
 		$thisnode{"Entry"}=$nodename;
 		$thisnode{"index"}=$nodeIndex{$nodename};
     $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"size"}=getSize($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth);
 		push(@nodes,\%thisnode);
 	}
 
@@ -90,7 +92,11 @@ if($netOrnodes eq "net"){
 		$thisnode{"description"}=$nodename;
 		$thisnode{"value"}=$nodename;
 		$thisnode{"tokens"}=$nodename;
+		$thisnode{"Entry"}=$nodename;
+		$thisnode{"index"}=$nodeIndex{$nodename};
     $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"size"}=getSize($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth);
 		push(@nodes,\%thisnode);
 	}
 	my %result;
@@ -108,5 +114,33 @@ sub getShape{
     return("2");
   }else{
     return("6");
+  }
+}
+
+sub getSize{
+  my $id=$_[0];
+  my %histoneMods = %{$_[1]};
+  my %dnaMeth = %{$_[2]};
+  
+  if(defined($histoneMods{$id})){
+    return("450");
+  }elsif(defined($dnaMeth{$id})){
+    return("450");
+  }else{
+    return("300");
+  }
+}
+
+sub getColor{
+  my $id=$_[0];
+  my %histoneMods = %{$_[1]};
+  my %dnaMeth = %{$_[2]};
+  
+  if(defined($histoneMods{$id})){
+    return("3");
+  }elsif(defined($dnaMeth{$id})){
+    return("1");
+  }else{
+    return("2");
   }
 }
