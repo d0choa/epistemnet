@@ -183,8 +183,7 @@
 		//Starting with the graph			
 		link = link.data(graph.links)
         .enter().append("svg:path")
-      	// .style("stroke-width", function(d) { return d.accumulated+1; })
-        .attr("class", "link")
+        .attr("class", function(d) {return "link " + d.type;})
         .attr("fill", "none");
           
 		gnodes = gnodes.data(graph.nodes)
@@ -451,7 +450,7 @@
             //link representation
         		link = link.data(minLinks)
             link.enter().append("svg:path")
-              .attr("class", "link")
+              .attr("class", function(d) {return "link " + d.type;})
               .attr("fill", "none")
               .on("click",function(e){lover(e)})
             link.style("stroke", function(d) { return color(parseInt(d.state)) })

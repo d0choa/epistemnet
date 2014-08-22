@@ -63,3 +63,7 @@ div.pop-desc {
     right:25px;
     border: 1px solid #a6a6a6
 }
+
+.link.negative {
+  stroke-dasharray: 6,5;
+}
