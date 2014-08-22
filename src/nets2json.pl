@@ -71,6 +71,11 @@ if($netOrnodes eq "net"){
 		$thislink{"target"}=$nodeIndex{$fields[1]};
 		$thislink{"state"}=$fields[$hcol{"STATE"}];
 		$thislink{"score"}=$fields[$hcol{"ENET_RSQ"}];
+    if($fields[$hcol{"ENET_B"}] == 0){
+      $thislink{"type"}="negative";
+    }else{
+      $thislink{"type"}="positive";
+    }
 		push(@links,\%thislink);
 	}
 	
