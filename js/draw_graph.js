@@ -139,13 +139,13 @@
 			d3.selectAll('.node[main^='+nodeName+']').attr("transform",
 				function(d) {
 					// trans=[Math.abs(d.x)*scale,Math.abs(d.y)*scale];
-					trans=[d.x*scale,d.y*scale];
-					zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
-					zoom.scale(scale);
+          // trans=[d.x*scale,d.y*scale];
+          // zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
+          // zoom.scale(scale);
 			})
 			vis.transition()
 				.duration(1000)
-				.attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
+        // .attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
 			trans=zoom.translate();
 			scale=zoom.scale();		
 		}
@@ -184,9 +184,9 @@
       // .attr("r", r - .5)
 			// .on ("mouseout",mout)
 			.attr('main', function(d) {return d.Entry})
-			        // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
-			        .style("stroke", function(d) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).darker(); })
-			        .style("stroke-width", 0.5)
+        // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
+        .style("stroke", function(d) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).darker(); })
+        .style("stroke-width", 0.5)
 			// .style("fill", function(d) { return color(d.GO_ref); });
 			.style("fill", function(d,i) { return nodecolor(parseInt(d.nodecolor)); });
 		var labels = gnodes.append("text")
