@@ -12,10 +12,11 @@ my %histoneMods = ("H3K9me3",1, "H3K9ac",1, "H3K27ac",1,"H3K79me2",1,"H3K27me3",
 
 my %dnaMeth = ("5fC",1,"5hmC",1,"5mC",1);
 
+my %CTCF = ("CTCF",1);
+
 open(STATESFILE, $statesFile);
 my @stateslines = <STATESFILE>;
 close(STATESFILE);
-
 
 my @nodenames;
 my %visitedNode;
@@ -186,6 +187,8 @@ sub getColor{
     return("3");
   }elsif(defined($dnaMeth{$id})){
     return("1");
+  }elsif(defined($CTCF{$id})){
+    return("4");
   }else{
     return("2");
   }
@@ -211,21 +214,22 @@ sub getX{
   my %dnaMeth = %{$_[2]};
   
   if(defined($histoneMods{$id})){
-    return(0.25);
+    return(0.50);
   }elsif(defined($dnaMeth{$id})){
-    return(0.75);
+    return(0.82);
+  }elsif(defined($CTCF{$id})){
+    return(0.16);
   }else{
     return(0.5);
   }
 }
-
 
 sub getFixed{
   my $id=$_[0];
   my %histoneMods = %{$_[1]};
   my %dnaMeth = %{$_[2]};
   
-  if(defined($histoneMods{$id}) || defined($dnaMeth{$id})){
+  if(defined($histoneMods{$id}) || defined($dnaMeth{$id}) || defined($CTCF{$id})){
     return(bless( do{\(my $o = 1)}, 'JSON::XS::Boolean' ));
   }else{
     return(bless( do{\(my $o = 0)}, 'JSON::XS::Boolean' ));
