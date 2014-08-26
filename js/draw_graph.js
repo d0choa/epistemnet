@@ -466,16 +466,22 @@
 			var rectpanel = d3.select(String(hashedid))
 				  .append("svg")
 				  .attr("width", 60)
-				  .attr("height", 10);
+				  .attr("height", 8);
 				  rectpanel.append("svg:line")
 				.attr("x1", 10)
-				.attr("y1", 0)
+				.attr("y1", 1)
 				.attr("x2", 60)
-				.attr("y2", 0)
+				.attr("y2", 1)
 				.attr("stroke-width", 5)				
-				.style("stroke", color(parseInt(state)))				
-		})		
-							
+				.style("stroke", color(parseInt(state)))        	
+		})
+    $("<h5></h5>").text("Elongation").insertBefore("#id1");
+    $("<h5></h5>").text("Heterochromatin").insertBefore("#id6");
+    $("<h5></h5>").text("Enhancer").insertBefore("#id11");
+    $("<h5></h5>").text("Activation").insertBefore("#id15");
+    $("<h5></h5>").text("Repression").insertBefore("#id18");
+    $("<h5></h5>").text("CTCF/insulator").insertBefore("#id20");
+    			
 		// Use a timeout to allow the rest of the page to load first.
 		setTimeout(function() {
 			gnodes.attr("transform", function(d) {

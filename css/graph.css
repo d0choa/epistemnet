@@ -50,17 +50,25 @@ div.pop-desc {
 	width: 150px;
 }
 
+label{
+	font-size: 12px;
+}
+
+div.checkbox{
+  margin-bottom: 6px;
+}
+
 #mainpanel {
     margin-top: 65px;
     margin-left: 5px;
     padding-right: 20px;
     padding-left: 20px;
-    padding-bottom: 0;
+    padding-bottom: 10px;
     background-color: rgba(255, 255, 255, .6);
     z-index: 20;
     position:fixed;
-	top:0;
-    right:25px;
+  	top:0;
+    right:15px;
     border: 1px solid #a6a6a6
 }
 
