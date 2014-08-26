@@ -144,7 +144,6 @@ if($netOrnodes eq "net"){
     }
     $thisnode{"x"}=getX($nodename, \%histoneMods, \%dnaMeth);
 		push(@nodes,\%thisnode);
-      push(@nodes,\%thisnode);
 	}
 	my %result;
 	print encode_json(\@nodes);
