@@ -445,10 +445,10 @@
             //link representation
         		link = link.data(minLinks)
             link.enter().append("svg:path")
-              .attr("class", function(d) {return "link " + d.type;})
               .attr("fill", "none")
               .on("click",function(e){lover(e)})
             link.style("stroke", function(d) { return color(parseInt(d.state)) })
+            link.attr("class", function(d) {return "link " + d.type;})
             link.exit().remove();
             keepNodesOnTop();            
 						force.start();														
