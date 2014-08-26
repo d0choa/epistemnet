@@ -13,7 +13,7 @@
 	var n = 100;
 	var r = 9;
     var trans=[0,0];
-    var scale=1;
+  var scale=1;
 	var color = d3.scale.category20();
 	var nodecolor = d3.scale.category10();
 	var previousd;
@@ -29,7 +29,7 @@
 	var test;
     var zoom = d3.behavior.zoom()
         .scaleExtent([0.5, 10])
-        .on("zoom", zoomed);
+        .on("zoom", redraw);
 		
 	var vis = d3.select(NETWORK_WINDOW_TAG)
 		.append("svg")
@@ -66,13 +66,13 @@
 	var link = vis.selectAll(".link"),
 	    gnodes = vis.selectAll(".node");
 	
-	// function redraw(){
-	// 	$(".pop-up").fadeOut(50);
-	// 	previousd=""; 
-	// 	trans=d3.event.translate;
-	// 	scale=d3.event.scale;
-	// 	vis.attr("transform","translate(" + [thewidth/2 + trans[0] - centerx, theheight/2 + trans[1] - centery] + ")"+" scale(" + scale + ")");
-	// }
+  // function redraw(){
+  //   $(".pop-up").fadeOut(50);
+  //   previousd="";
+  //   trans=d3.event.translate;
+  //   scale=d3.event.scale;
+  //   // vis.attr("transform","translate(" + [thewidth/2 + trans[0] - centerx, theheight/2 + trans[1] - centery] + ")"+" scale(" + scale + ")");
+  // }
 	
   	
 	function dragstart(d, i) {
@@ -87,9 +87,13 @@
 		rect.attr("width", thewidth).attr("height", theheight);
 	}
 	
-    function zoomed() {
-      vis.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-    }
+  function redraw() {
+		$(".pop-up").fadeOut(50);
+		previousd="";
+		trans=d3.event.translate;
+		scale=d3.event.scale;		
+		vis.attr("transform","translate(" + [thewidth/2 + trans[0] - centerx, theheight/2 + trans[1] - centery] + ")"+" scale(" + scale + ")");
+  }
 	
 	$(window).on("resize", function() {updateWindow()}).trigger("resize");
 	
@@ -148,17 +152,17 @@
 	
 	function focusOnNode(nodeName){
 		if(d3.selectAll('.node[main^='+nodeName+']').data().length == 1){
-	        $(".pop-up").fadeOut(50);
+      $(".pop-up").fadeOut(50);
 			d3.selectAll('.node[main^='+nodeName+']').attr("transform",
 				function(d) {
 					// trans=[Math.abs(d.x)*scale,Math.abs(d.y)*scale];
-          // trans=[d.x*scale,d.y*scale];
-          // zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
-          // zoom.scale(scale);
+					trans=[d.x*scale,d.y*scale];
+					zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
+					zoom.scale(scale);
 			})
 			vis.transition()
 				.duration(1000)
-        // .attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
+				.attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
 			trans=zoom.translate();
 			scale=zoom.scale();		
 		}
@@ -478,6 +482,9 @@
         d.x = d.x * thewidth;
         d.y = d.y * theheight; 
       })
+      centerx = thewidth/2;
+      centery = theheight/2;
+      
 		  // Run the layout a fixed number of times.
 		  // The ideal number of times scales with graph complexity.
 		  // Of course, don't run too long—you'll hang the page!
@@ -487,7 +494,7 @@
 			// 		      .attr("y1", function(d) { return d.source.y; })
 			// 		      .attr("x2", function(d) { return d.target.x; })
 			// 		      .attr("y2", function(d) { return d.target.y; });
-			//
+
       // var allxs=0;
       // var counter=0;
       // var allys=0;
@@ -498,7 +505,8 @@
       // });
       // centerx = allxs/counter;
       // centery = allys/counter;
-      //
+
+
       // var minx=0;
       // var maxx=0;
       // var miny=0;
