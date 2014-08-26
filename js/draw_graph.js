@@ -103,23 +103,36 @@
 		searchNodes(val);
 	});
 	
+  // constructs the suggestion engine
+  var nodeEngine = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: 'data/nodes.json',
+      filter: function(list) {
+        return $.map(list, function(node) { return { value: node }; });
+      }
+    }
+  });
+ 
+  // kicks off the loading/processing of `local` and `prefetch`
+  nodeEngine.initialize();
+ 
+  $('#srch-term').typeahead({
+    hint: true,
+    highlight: true,
+    minLength: 1},
+  {
+    name: 'nodes',
+    displayKey: 'value',
+    source: nodeEngine.ttAdapter()
+  });
+  
 	$('#srch-term').on('change', function (e) {
 		var val = $.trim($('#srch-term').val());
 		searchNodes(val);
 	})
-	
-	$('#srch-term').typeahead({
-		prefetch: 'data/nodes.json',
-	    template: [
-			'<div>',
-			'<p class="repo-language">{{tokens}}</p>',
-			'<p class="repo-name">{{value}}</p>',                                                                    
-			'</div>',
-			'<p class="repo-description">{{description}}</p>'                         
-	    ].join(''),
-		engine: Hogan
-	});
-	
+  	
 	function searchNodes(nodeNames){
 		// deletee previous
 		// d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
