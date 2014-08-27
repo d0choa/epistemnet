@@ -184,8 +184,9 @@
         .enter().append("svg:path")
         .attr("class", function(d) {return "link " + d.type;})
         .style('stroke-width', 1.5)
-        .attr("fill", "none");
-          
+        .attr("fill", "none")
+        .on("click",lover); 
+        
 		gnodes = gnodes.data(graph.nodes)
 			.enter()
 			.append('g')
@@ -213,8 +214,7 @@
 			.style("font-size","12px")
 			.text(function(d) { return d.Entry; });
         
-    link.on("click",function(e){lover(e)})
-      .style("stroke", function(d) { return color(parseInt(d.state)) });
+    link.style("stroke", function(d) { return color(parseInt(d.state)) });
     
     node.append("title")
 	      .text(function(d) { return d.Entry; });
@@ -345,14 +345,20 @@
 		
 	    function lover(d,i) {
         $(".pop-up").fadeOut(50);
-        console.log(d.state);
-        var thisd = d.source.index + "-" + d.target.index;
+        var thisd = d.source.index + "-" + d.target.index + "-" + d.state;
     		if(thisd != previousd){
     			previousd = thisd;
 	        $("#pop-up-link").fadeOut(100,function () {
-              // Popup content
-              $("#link-title").html("Interaction: " + d.state);
-    				// $("#orthologs").html(d.n);
+            // Popup content
+            $("#link-title").html(d.source.Entry + "-" + d.target.Entry);
+            if(d.type == "negative"){
+              $("#type").html("Negative");
+            }else{
+              $("#type").html("Positive");
+            }
+            $("#state").html(d.state + " (" +d.stateType+ ")");
+            $("#score").html(parseFloat(d.score).toFixed(3));
+            
     				// $("#mt").html(Math.round(d.r).toFixed(5));
     				// var pval;
     				// if(d.p_value == 0){
@@ -395,8 +401,8 @@
     				// $("#ecocyc_regulation").html(reg);
     				//
             // Popup position
-            var popLeft = (d.source.x*scale)+trans[0]+20;//lE.cL[0] + 20;
-            var popTop = (d.source.y*scale)+trans[1]+20;//lE.cL[1] + 70;
+            var popLeft = ((d.source.x + d.target.x)/2*scale)+trans[0];//lE.cL[0] + 20;
+            var popTop = ((d.source.y + d.target.y)/2*scale)+trans[1];//lE.cL[1] + 70;
             // var popLeft = (((d.source.x + d.target.x)/2)*scale)+thewidth/2-centerx+trans[0];//lE.cL[0] + 20;
             // var popTop = (((d.source.y + d.target.y)/2)*scale)+theheight/2-centery+trans[1]+20;//lE.cL[1] + 70;
             $("#pop-up-link").css({"left":popLeft,"top":popTop});
@@ -428,6 +434,7 @@
             //
             //Preparing new list of links
 						//
+  	        $(".pop-up").fadeOut(50);
             minLinks=[];
             var checkedValues = $('input:checkbox:checked').map(function() {
 						    return this.value;
@@ -450,7 +457,7 @@
         		link = link.data(minLinks)
             link.enter().append("svg:path")
               .attr("fill", "none")
-              .on("click",function(e){lover(e)})
+              .on("click",lover);
             link.style("stroke", function(d) { return color(parseInt(d.state)) })
             link.attr("class", function(d) {return "link " + d.type;})
             link.exit().remove();
