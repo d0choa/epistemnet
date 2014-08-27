@@ -76,8 +76,7 @@
 	
   	
 	function dragstart(d, i) {
-	    d3.select(this).classed("fixed", d.fixed = true);
-        $(".pop-up").fadeOut(50);
+    $(".pop-up").fadeOut(50);
 	}
   
 	function updateWindow(){
@@ -319,6 +318,16 @@
         $("#pop-up-node").fadeOut(100,function () {
             // Popup content
             $("#node-title").html(d.Entry);
+            if(d.complex != "none"){
+              $("#complex").html(d.complex);
+            }else{
+              $("#complex").html("None");
+            }
+            if(d.geo != "none"){
+              $("#geo").html($("<a></a>").attr('href', "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+d.geo).text(d.geo));
+            }else{
+              $("#geo").html("None");
+            }
             // $("#nodename").html(d.Protein_names);
             // $("#uniprot").html(d.Entry);
             // $("#gofun").html(d.GO_ref);

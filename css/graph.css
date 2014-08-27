@@ -49,6 +49,9 @@ div.pop-img {
 div.pop-desc {
 	width: 150px;
 }
+.pop-up-content a{
+	color: white;
+}
 
 label{
 	font-size: 12px;
@@ -62,6 +65,7 @@ span.text-primary{
   font-size: 10px;
   cursor: pointer;
 }
+
 
 #mainpanel {
     margin-top: 15px;
