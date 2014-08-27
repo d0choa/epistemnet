@@ -14,6 +14,8 @@ my %dnaMeth = ("5fC",1,"5hmC",1,"5mC",1);
 
 my %CTCF = ("CTCF",1);
 
+my %stateType = ("1","Elongation","2","Elongation","3","Elongation","4","Elongation","5","Elongation","6","Heterochromatin","7","Heterochromatin","8","Heterochromatin","9","Heterochromatin","10","Heterochromatin","11","Enhancer","12","Enhancer","13","Enhancer","14","Enhancer","15","Activation","16","Activation","17","Activation","18","Repression","19","Repression","20","CTCF/Insulator");
+
 open(STATESFILE, $statesFile);
 my @stateslines = <STATESFILE>;
 close(STATESFILE);
@@ -100,6 +102,7 @@ if($netOrnodes eq "net"){
 		$thislink{"source"}=$nodeIndex{$fields[0]};
 		$thislink{"target"}=$nodeIndex{$fields[1]};
 		$thislink{"state"}=$fields[$hcol{"STATE"}];
+		$thislink{"stateType"}=$stateType{$fields[$hcol{"STATE"}]};
 		$thislink{"score"}=$fields[$hcol{"ENET_RSQ"}];
     if($fields[$hcol{"ENET_B"}] != 1){
   		$thislink{"type"}="negative";
