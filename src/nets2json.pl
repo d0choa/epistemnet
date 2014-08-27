@@ -5,7 +5,8 @@ use JSON::XS;
 
 my $statesFile = $ARGV[0];
 my $netOrnodes = $ARGV[1];
-my $nodeInfoCytoscape = $ARGV[2];
+my $geoCodesFile = $ARGV[2];
+my $complexesFile = $ARGV[3];
 
 my %histoneMods = ("H3K9me3",1, "H3K9ac",1, "H3K27ac",1,"H3K79me2",1,"H3K27me3",1,
 "H3K4me2",1,"H3K36me2",1,"H3K36me3",1,"H4K20me3",1,"H3K4me3",1,"H3K4me1",1, "H2Aub1", 1, "H2AZ", 1);
@@ -15,6 +16,9 @@ my %dnaMeth = ("5fC",1,"5hmC",1,"5mC",1);
 my %CTCF = ("CTCF",1);
 
 my %stateType = ("1","Elongation","2","Elongation","3","Elongation","4","Elongation","5","Elongation","6","Heterochromatin","7","Heterochromatin","8","Heterochromatin","9","Heterochromatin","10","Heterochromatin","11","Enhancer","12","Enhancer","13","Enhancer","14","Enhancer","15","Activation","16","Activation","17","Activation","18","Repression","19","Repression","20","CTCF/Insulator");
+
+my %geo = %{getGEOFile($geoCodesFile)};
+my %complexes = %{getComplexesFile($complexesFile)};
 
 open(STATESFILE, $statesFile);
 my @stateslines = <STATESFILE>;
@@ -73,7 +77,9 @@ if($netOrnodes eq "net"){
 		$thisnode{"index"}=$nodeIndex{$nodename};
     $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"size"}=getSize($nodename, \%histoneMods, \%dnaMeth);
-    $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth);
+    $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth,\%complexes);
+    $thisnode{"complex"}=getComplex($nodename, \%complexes);
+    $thisnode{"geo"}=getGEO($nodename, \%geo);
     $thisnode{"fixed"}=getFixed($nodename, \%histoneMods, \%dnaMeth);
     my $type = getType($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"type"}= $type;
@@ -160,6 +166,20 @@ sub getColor{
   my $id=$_[0];
   my %histoneMods = %{$_[1]};
   my %dnaMeth = %{$_[2]};
+  my %complex = %{$_[3]};
+  
+  my %complexColor;
+  my %visitedComplex;
+  my $colorCounter=5;
+  my @keys = keys %complex;
+  foreach my $key (@keys){
+    my $complexName = $complex{$key};
+    if(!defined($visitedComplex{$complexName})){
+      $complexColor{$complexName}=$colorCounter;
+      $colorCounter++;
+      $visitedComplex{$complexName}=1;
+    }
+  }
   
   if(defined($histoneMods{$id})){
     return("3");
@@ -167,6 +187,8 @@ sub getColor{
     return("1");
   }elsif(defined($CTCF{$id})){
     return("4");
+  }elsif(defined($complexes{$id})){
+    return($complexColor{$complexes{$id}});
   }else{
     return("2");
   }
@@ -212,4 +234,59 @@ sub getFixed{
   }else{
     return(bless( do{\(my $o = 0)}, 'JSON::XS::Boolean' ));
   }
+}
+
+sub getGEO{
+  my $id=$_[0];
+  my %geo=%{$_[1]};
+  if(defined($geo{$id})){
+    return($geo{$id});
+  }else{
+    return("none");
+  }
+}
+
+sub getComplex{
+  my $id=$_[0];
+  my %complex=%{$_[1]};
+  if(defined($complex{$id})){
+    return($complex{$id});
+  }else{
+    return("none");
+  }
+}
+
+sub getGEOFile{
+  my $inputFile = $_[0];
+  
+  open(INFILE, $inputFile);
+  my @inlines = <INFILE>;
+  close(INFILE);
+  
+  my %geo;
+  for(my $i=1;$i<scalar(@inlines);$i++){
+    my $line = $inlines[$i];
+    chomp($line);
+    my @fields = split(/,/,$line);
+    $geo{$fields[0]}=$fields[1];
+  }
+  return(\%geo);
+}
+
+sub getComplexesFile{
+  my $inputFile = $_[0];
+  open(INFILE, $inputFile);
+  my @inlines = <INFILE>;
+  close(INFILE);
+  
+  my %complexes;
+  for(my $i=1;$i<scalar(@inlines);$i++){
+    my $line = $inlines[$i];
+    chomp($line);
+    my @fields = split(/\t/, $line);
+    if(defined($fields[0])){
+      $complexes{$fields[0]}=$fields[1];
+    }
+  }
+  return(\%complexes);
 }
