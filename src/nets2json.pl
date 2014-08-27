@@ -8,7 +8,7 @@ my $netOrnodes = $ARGV[1];
 my $nodeInfoCytoscape = $ARGV[2];
 
 my %histoneMods = ("H3K9me3",1, "H3K9ac",1, "H3K27ac",1,"H3K79me2",1,"H3K27me3",1,
-"H3K4me2",1,"H3K36me2",1,"H3K36me3",1,"H4K20me3",1,"H3K4me3",1,"H3K4me1",1);
+"H3K4me2",1,"H3K36me2",1,"H3K36me3",1,"H4K20me3",1,"H3K4me3",1,"H3K4me1",1, "H2Aub1", 1, "H2AZ", 1);
 
 my %dnaMeth = ("5fC",1,"5hmC",1,"5mC",1);
 
@@ -120,33 +120,6 @@ if($netOrnodes eq "net"){
     my $nodename = $nodenames[$i];
 		push(@nodes,$nodename);
     @nodes = sort @nodes;
-    #
-    # my %thisnode;
-    # $thisnode{"description"}=$nodename;
-    # $thisnode{"value"}=$nodename;
-    # $thisnode{"tokens"}=$nodename;
-    # $thisnode{"Entry"}=$nodename;
-    # $thisnode{"index"}=$nodeIndex{$nodename};
-    #     $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
-    #     $thisnode{"size"}=getSize($nodename, \%histoneMods, \%dnaMeth);
-    #     $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth);
-    #     $thisnode{"fixed"}=getFixed($nodename, \%histoneMods, \%dnaMeth);
-    #     my $type = getType($nodename, \%histoneMods, \%dnaMeth);
-    #     $thisnode{"type"}= $type;
-    #     if(!defined($typeCounter{$type})){
-    #       $typeCounter{$type}=1;
-    #     }else{
-    #       $typeCounter{$type} = $typeCounter{$type}+1;
-    #     }
-    #     if($type eq "histone"){
-    #       $thisnode{"y"}=(($typeCounter{$type}/($histoneTotal + 2)) + (0.5 / ($histoneTotal+2)));
-    #     }elsif($type eq "methylation"){
-    #       $thisnode{"y"}=(($typeCounter{$type}/($methylTotal+ 2)) + (0.5 / ($methylTotal+2)));
-    #     }else{
-    #       $thisnode{"y"}=0.5;
-    #     }
-    #     $thisnode{"x"}=getX($nodename, \%histoneMods, \%dnaMeth);
-    # push(@nodes,\%thisnode);
 	}
 	my %result;
 	print encode_json(\@nodes);
