@@ -58,6 +58,11 @@ div.checkbox{
   margin-bottom: 6px;
 }
 
+span.text-primary{
+  font-size: 10px;
+  cursor: pointer;
+}
+
 #mainpanel {
     margin-top: 15px;
     margin-left: 5px;

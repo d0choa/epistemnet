@@ -375,6 +375,9 @@
 		//Get all the states and fill panel with states
 		var states = [];
 		$.each(graph.links, function(i,value){states.push(parseInt(value.state))})
+    var statetypes = [];
+		$.each(graph.links, function(i,value){statetypes[value.state]=value.stateType.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "_")})
+    
 		var uniquestates=states.filter(function(itm,i,a){
 		    return i==a.indexOf(itm);
 		});
@@ -387,6 +390,7 @@
 			var labelContainer = $('<label></label>').text("State " + state)
 		        .append($('<input></input>')
 					.prop('type', 'checkbox')
+          .addClass(statetypes[state])
 					.change(function() {
             //
             //Preparing new list of links
@@ -439,13 +443,26 @@
 				.attr("stroke-width", 5)				
 				.style("stroke", color(parseInt(state)))        	
 		})
-    $("<h5></h5>").text("Elongation").insertBefore("#id1");
-    $("<h5></h5>").text("Heterochromatin").insertBefore("#id6");
-    $("<h5></h5>").text("Enhancer").insertBefore("#id11");
-    $("<h5></h5>").text("Activation").insertBefore("#id15");
-    $("<h5></h5>").text("Repression").insertBefore("#id18");
-    $("<h5></h5>").text("CTCF/insulator").insertBefore("#id20");
-    			
+    //All labels
+    var elong = $("<h5></h5>").text("Elongation ").insertBefore("#id1")
+      .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Elongation').prop('checked', true).trigger('change')}))
+      .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Elongation').prop('checked', false).trigger('change')}))
+    var hetero = $("<h5></h5>").text("Heterochromatin ").insertBefore("#id6")
+      .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Heterochromatin').prop('checked', true).trigger('change')}))
+      .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Heterochromatin').prop('checked', false).trigger('change')}))
+    var enhan = $("<h5></h5>").text("Enhancer ").insertBefore("#id11")
+      .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Enhancer').prop('checked', true).trigger('change')}))
+      .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Enhancer').prop('checked', false).trigger('change')}))
+    var active = $("<h5></h5>").text("Activation ").insertBefore("#id15")
+      .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Activation').prop('checked', true).trigger('change')}))
+      .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Activation').prop('checked', false).trigger('change')}))
+    var repress = $("<h5></h5>").text("Repression ").insertBefore("#id18")
+      .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Repression').prop('checked', true).trigger('change')}))
+      .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Repression').prop('checked', false).trigger('change')}))
+    var ctcf = $("<h5></h5>").text("CTCF/insulator ").insertBefore("#id20")
+      .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.CTCF_Insulator').prop('checked', true).trigger('change')}))
+      .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.CTCF_Insulator').prop('checked', false).trigger('change')}))
+    
 		// Use a timeout to allow the rest of the page to load first.
 		setTimeout(function() {
 			gnodes.attr("transform", function(d) {
