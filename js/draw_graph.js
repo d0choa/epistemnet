@@ -313,105 +313,62 @@
 		
 							    
 		function mover(d,i) {
-	        $(".pop-up").fadeOut(50);
-      // if(d.name != previousd){
-      //   previousd = d.name;
-      //             $("#pop-up-node").fadeOut(100,function () {
-      //                 // Popup content
-      //                 // $("#node-title").html(d.main + " (" + d.name + ")");
-      //                 // $("#nodename").html(d.Protein_names);
-      //                 $("#uniprot").html(d.Entry);
-      //                 // $("#gofun").html(d.GO_ref);
-      //                 // $("#gofundesc").html(d.GOref_description);
-      //     // var enrichpval;
-      //     // if(d.reference_pval == "NA"){
-      //     //   enrichpval="NA"
-      //     // }else{
-      //     //   enrichpval=parseFloat(d.reference_pval.toPrecision(5));
-      //     // }
-      //     // $("#gofunpval").html(enrichpval) ;
-      //     //
-      //                 // Popup position
-      //                 // var popLeft = (d.x*scale) + thewidth/2 - centerx + trans[0];//lE.cL[0] + 20;
-      //                 // var popTop = (d.y*scale) + theheight/2 - centery + trans[1];//lE.cL[1] + 70;
-      //                 // $("#pop-up-node").css({"left":popLeft,"top":popTop});
-      //                 // $("#pop-up-node").fadeIn(100);
-      //             });
-      // }else{
-      //   previousd = "";
-      // }
-	    }
-		
-		
-	    function lover(d,i) {
-        $(".pop-up").fadeOut(50);
-        var thisd = d.source.index + "-" + d.target.index + "-" + d.state;
-    		if(thisd != previousd){
-    			previousd = thisd;
-	        $("#pop-up-link").fadeOut(100,function () {
+      $(".pop-up").fadeOut(50);
+      if(d.Entry != previousd){
+        previousd = d.Entry;
+        $("#pop-up-node").fadeOut(100,function () {
             // Popup content
-            $("#link-title").html(d.source.Entry + "-" + d.target.Entry);
-            if(d.type == "negative"){
-              $("#type").html("Negative");
-            }else{
-              $("#type").html("Positive");
-            }
-            $("#state").html(d.state + " (" +d.stateType+ ")");
-            $("#score").html(parseFloat(d.score).toFixed(3));
-            
-    				// $("#mt").html(Math.round(d.r).toFixed(5));
-    				// var pval;
-    				// if(d.p_value == 0){
-    				// 	pval="< 1E-3";
-    				// }else{
-    				// 	pval=d.p_value;
-    				// }
-    				// $("#pMT").html(pval);
-    				// $("#context").html(d.context_lvl10);
-    				// var binary,complex,kpath,ecopath,reg;
-    				// if(d.binary_physical == "NA"){
-    				// 	binary="&#10008";
-    				// }else{
-    				// 	binary="&#10004";
-    				// }
-    				// if(d.ecocyc_complexes == "NA"){
-    				// 	complex="&#10008";
-    				// }else{
-    				// 	complex="&#10004";
-    				// }
-    				// if(d.kegg_pathways == "NA"){
-    				// 	kpath="&#10008";
-    				// }else{
-    				// 	kpath="&#10004";
-    				// }
-    				// if(d.ecocyc_pathways == "NA"){
-    				// 	ecopath="&#10008";
-    				// }else{
-    				// 	ecopath="&#10004";
-    				// }
-    				// if(d.ecocyc_regulation == "NA"){
-    				// 	reg="&#10008";
-    				// }else{
-    				// 	reg="&#10004";
-    				// }
-    				// $("#binary_physical").html(binary);
-    				// $("#ecocyc_complexes").html(complex);
-    				// $("#kegg_pathways").html(kpath);
-    				// $("#ecocyc_pathways").html(ecopath);
-    				// $("#ecocyc_regulation").html(reg);
-    				//
-            // Popup position
-            var popLeft = ((d.source.x + d.target.x)/2*scale)+trans[0];//lE.cL[0] + 20;
-            var popTop = ((d.source.y + d.target.y)/2*scale)+trans[1];//lE.cL[1] + 70;
-            // var popLeft = (((d.source.x + d.target.x)/2)*scale)+thewidth/2-centerx+trans[0];//lE.cL[0] + 20;
-            // var popTop = (((d.source.y + d.target.y)/2)*scale)+theheight/2-centery+trans[1]+20;//lE.cL[1] + 70;
-            $("#pop-up-link").css({"left":popLeft,"top":popTop});
-              $("#pop-up-link").fadeIn(100);
-  	        });
-    		}else{
-    			previousd = "";
-    		}
-	    }
+            $("#node-title").html(d.Entry);
+            // $("#nodename").html(d.Protein_names);
+            // $("#uniprot").html(d.Entry);
+            // $("#gofun").html(d.GO_ref);
+            // $("#gofundesc").html(d.GOref_description);
+            // var enrichpval;
+            // if(d.reference_pval == "NA"){
+            //   enrichpval="NA"
+            // }else{
+            //   enrichpval=parseFloat(d.reference_pval.toPrecision(5));
+            // }
+            // $("#gofunpval").html(enrichpval) ;
+            //Popup position
+            var popLeft = ((d.x*scale) + trans[0]);//lE.cL[0] + 20;
+            var popTop = ((d.y*scale)+trans[1]);//lE.cL[1] + 70;            
+            $("#pop-up-node").css({"left":popLeft,"top":popTop});
+            $("#pop-up-node").fadeIn(100);
+        });
+      }else{
+        previousd = "";
+      }
+    }
+		
+		
+    function lover(d,i) {
+      $(".pop-up").fadeOut(50);
+      var thisd = d.source.index + "-" + d.target.index + "-" + d.state;
+  		if(thisd != previousd){
+  			previousd = thisd;
+        $("#pop-up-link").fadeOut(100,function () {
+          // Popup content
+          $("#link-title").html(d.source.Entry + "-" + d.target.Entry);
+          if(d.type == "negative"){
+            $("#type").html("Negative");
+          }else{
+            $("#type").html("Positive");
+          }
+          $("#state").html(d.state + " (" +d.stateType+ ")");
+          $("#score").html(parseFloat(d.score).toFixed(3));
+          // Popup position
+          var popLeft = ((d.source.x + d.target.x)/2*scale)+trans[0];//lE.cL[0] + 20;
+          var popTop = ((d.source.y + d.target.y)/2*scale)+trans[1];//lE.cL[1] + 70;
+          // var popLeft = (((d.source.x + d.target.x)/2)*scale)+thewidth/2-centerx+trans[0];//lE.cL[0] + 20;
+          // var popTop = (((d.source.y + d.target.y)/2)*scale)+theheight/2-centery+trans[1]+20;//lE.cL[1] + 70;
+          $("#pop-up-link").css({"left":popLeft,"top":popTop});
+            $("#pop-up-link").fadeIn(100);
+	        });
+  		}else{
+  			previousd = "";
+  		}
+    }
 		
 		$('.progress-bar').attr('aria-valuetransitiongoal', 100).progressbar();	  
 		
