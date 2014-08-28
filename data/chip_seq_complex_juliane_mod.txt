@@ -1,6 +1,6 @@
 Name	Complex
 CTCF	CTCF/cohesin
-RAD1	CTCF/cohesin
+RAD21	CTCF/cohesin
 SMC1	CTCF/cohesin
 SMC3	CTCF/cohesin
 SUZ12	PRC1/2
