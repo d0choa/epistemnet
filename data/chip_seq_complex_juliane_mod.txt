@@ -25,7 +25,9 @@ MI2B	NURD
 LSD1	NURD
 HDAC1	NURD
 HDAC2	NURD
-RNAPII_8WG16	RNA polymerase II - Elongation
+MBD2	NURD
+MBD3	NURD
+POLII	RNA polymerase II - Elongation
 RNAPII_S7P	RNA polymerase II - Elongation
 RNAPII_S5P	RNA polymerase II - Elongation
 RNAPII_S2P	RNA polymerase II - Elongation
