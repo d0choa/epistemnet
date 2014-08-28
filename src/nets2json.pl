@@ -373,7 +373,10 @@ sub getMappings{
     my @fields = split(/\t/, $line);
     push(@{$genenames{$fields[0]}}, $fields[1]);
     if($fields[2] ne ""){
-      push(@{$genenames{$fields[0]}}, $fields[2]);
+		my @allalternatives = split(" ", $fields[2]);
+		foreach my $altern (@allalternatives){
+	        push(@{$genenames{$fields[0]}}, $altern);
+		}
     }
     $description{$fields[0]}=$fields[3];
     $ensemblgene{$fields[0]}=$fields[4];
