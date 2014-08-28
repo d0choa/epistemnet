@@ -1,0 +1,56 @@
+Our Gene names	Gene names (PREFERRED)	Gene names (ALTERNATIVE)	Protein names	ENSEBL Gene	ENSEMBL Protein	UniProt AC
+MED12	Med12	Kiaa0192 Mopa Tnrc11 Trap230	Mediator of RNA polymerase II transcription subunit 12 (Mediator complex subunit 12) (OPA-containing protein) (Thyroid hormone receptor-associated protein complex 230 kDa component) (Trap230) (Trinucleotide repeat-containing gene 11 protein)	ENSMUSG00000079487	ENSMUSP00000085260	A2AGH6
+MAX	Max		Max protein (Protein max)	ENSMUSG00000059436	ENSMUSP00000106025	B2RS19
+P300	Ep300	P300	Histone acetyltransferase p300 (p300 HAT) (EC 2.3.1.48) (E1A-associated protein p300)	ENSMUSG00000055024	ENSMUSP00000066789	B2RWS6
+SETDB1	Setdb1		Histone-lysine N-methyltransferase SETDB1	ENSMUSG00000015697	ENSMUSP00000015841	D3YYC3
+TAF1	Taf1		Transcription initiation factor TFIID subunit 1	ENSMUSG00000031314	ENSMUSP00000098895	D3YZK4
+TET1	Tet1		Methylcytosine dioxygenase TET1	ENSMUSG00000047146	ENSMUSP00000133279	E9Q9Y4
+KDM2A	Kdm2a	Fbxl11	F-box and leucine-rich repeat protein 11 (Lysine-specific demethylase 2A)	ENSMUSG00000054611	ENSMUSP00000047683	F6YRW4
+MLL2	Kmt2b	Mll2 Trx2 Wbp7	Histone-lysine N-methyltransferase 2B (Lysine N-methyltransferase 2B) (EC 2.1.1.43) (Myeloid/lymphoid or mixed-lineage leukemia protein 4 homolog) (Trithorax homolog 2) (WW domain-binding protein 7) (WBP-7)	ENSMUSG00000006307	ENSMUSP00000103789	O08550
+POLII	Polr2a	Rpii215 Rpo2-1	DNA-directed RNA polymerase II subunit RPB1 (RNA polymerase II subunit B1) (EC 2.7.7.6) (DNA-directed RNA polymerase II subunit A) (DNA-directed RNA polymerase III largest subunit)	ENSMUSG00000005198	ENSMUSP00000071200	P08775
+LAMINB	Lmnb1		Lamin-B1	ENSMUSG00000024590	ENSMUSP00000025486	P14733
+OCT4	Pou5f1	Oct-3 Oct-4 Otf-3 Otf3	POU domain, class 5, transcription factor 1 (NF-A3) (Octamer-binding protein 3) (Oct-3) (Octamer-binding protein 4) (Oct-4) (Octamer-binding transcription factor 3) (OTF-3)	ENSMUSG00000024406	ENSMUSP00000025271	P20263
+SMAD1	Smad1	Madh1 Madr1	Mothers against decapentaplegic homolog 1 (MAD homolog 1) (Mothers against DPP homolog 1) (Dwarfin-A) (Dwf-A) (Mothers-against-DPP-related 1) (Mad-related protein 1) (mMad1) (SMAD family member 1) (SMAD 1) (Smad1)	ENSMUSG00000031681	ENSMUSP00000071035	P70340
+TFCP2L1	Tfcp2l1	Crtr1 Tcfcp2l1	Transcription factor CP2-like protein 1 (CP2-related transcriptional repressor 1) (CRTR-1)	ENSMUSG00000026380	ENSMUSP00000027629	Q3UNW5
+HDAC2	Hdac2		Putative uncharacterized protein (Fragment)	ENSMUSG00000019777	ENSMUSP00000019911	Q3URA2
+HDAC1	Hdac1		Histone deacetylase (EC 3.5.1.98)	ENSMUSG00000028800	ENSMUSP00000099657	Q58E49
+SIN3A	Sin3a	Kiaa4126	Paired amphipathic helix protein Sin3a (Histone deacetylase complex subunit Sin3a) (Transcriptional corepressor Sin3a)	ENSMUSG00000042557	ENSMUSP00000128956	Q60520
+KLF4	Klf4	Ezf Gklf Zie	Krueppel-like factor 4 (Epithelial zinc finger protein EZF) (Gut-enriched krueppel-like factor)	ENSMUSG00000003032	ENSMUSP00000103245	Q60793
+SOX2	Sox2		SRY-box containing gene 2 (Sox2 protein) (Transcription factor SOX-2) (Transcriptional factor SOX2)	ENSMUSG00000074637	ENSMUSP00000096755	Q60I23
+CTCF	Ctcf		Transcriptional repressor CTCF (11-zinc finger protein) (CCCTC-binding factor) (CTCFL paralog)	ENSMUSG00000005698	ENSMUSP00000005841	Q61164
+EZH2	Ezh2	Enx1h	Histone-lysine N-methyltransferase EZH2 (EC 2.1.1.43) (ENX-1) (Enhancer of zeste homolog 2)	ENSMUSG00000029687	ENSMUSP00000080419	Q61188
+HCFC1	Hcfc1		Host cell factor 1 (HCF) (HCF-1) (C1 factor) [Cleaved into: HCF N-terminal chain 1; HCF N-terminal chain 2; HCF N-terminal chain 3; HCF N-terminal chain 4; HCF N-terminal chain 5; HCF N-terminal chain 6; HCF C-terminal chain 1; HCF C-terminal chain 2; HCF C-terminal chain 3; HCF C-terminal chain 4; HCF C-terminal chain 5; HCF C-terminal chain 6]	ENSMUSG00000031386	ENSMUSP00000033761	Q61191
+E2F1	E2f1		Transcription factor E2F1 (E2F-1)	ENSMUSG00000027490	ENSMUSP00000099434	Q61501
+RAD21	Rad21	Hr21	Double-strand-break repair protein rad21 homolog (Pokeweed agglutinin-binding protein 29) (PW29) (SCC1 homolog)	ENSMUSG00000022314	ENSMUSP00000022927	Q61550
+MAFK	Mafk	Nfe2u	Transcription factor MafK (Erythroid transcription factor NF-E2 p18 subunit)	ENSMUSG00000018143	ENSMUSP00000018287	Q61827
+KAP1	Trim28	Kap1 Krip1 Tif1b	Transcription intermediary factor 1-beta (TIF1-beta) (E3 SUMO-protein ligase TRIM28) (EC 6.3.2.-) (KRAB-A-interacting protein) (KRIP-1) (Tripartite motif-containing protein 28)	ENSMUSG00000005566	ENSMUSP00000005705	Q62318
+NIPBL	Nipbl		Nipped-B-like protein (Delangin homolog) (SCC2 homolog)	ENSMUSG00000022141	ENSMUSP00000059385	Q6KCD5
+ZC3H11A	Zc3h11a	Kiaa0663	Zinc finger CCCH domain-containing protein 11A	ENSMUSG00000026464	ENSMUSP00000027736	Q6NZF1
+KDM2B	Kdm2b	Fbl10 Fbxl10 Jhdm1b Kiaa3014	Lysine-specific demethylase 2B (EC 1.14.11.27) (F-box and leucine-rich repeat protein 10) (F-box protein FBL10) (F-box/LRR-repeat protein 10) (JmjC domain-containing histone demethylation protein 1B) ([Histone-H3]-lysine-36 demethylase 1B)	ENSMUSG00000029475	ENSMUSP00000038229	Q6P1G2
+ZNF384	Zfp384		Zfp384 protein	ENSMUSG00000038346	ENSMUSP00000081296	Q6P3F1
+LSD1	Kdm1a	Aof2 Kiaa0601 Lsd1	Lysine-specific histone demethylase 1A (EC 1.-.-.-) (BRAF35-HDAC complex protein BHC110) (Flavin-containing amine oxidase domain-containing protein 2)	ENSMUSG00000036940	ENSMUSP00000111977	Q6ZQ88
+SUZ12	Suz12	D11Ertd530e Kiaa0160	Polycomb protein Suz12 (Suppressor of zeste 12 protein homolog)	ENSMUSG00000017548	ENSMUSP00000017692	Q80U70
+ESRRB	Esrrb		Esrrb protein (Fragment)	ENSMUSG00000021255	ENSMUSP00000105833	Q80VS1
+NANOG	Nanog	Ecat4 Enk	Homeobox protein NANOG (ES cell-associated protein 4) (Early embryo specific expression NK-type homeobox protein) (Homeobox transcription factor Nanog)	ENSMUSG00000012396	ENSMUSP00000012540	Q80Z64
+RYBP	Rybp	Dedaf	RING1 and YY1-binding protein (Death effector domain-associated factor) (DED-associated factor)	ENSMUSG00000072872	ENSMUSP00000098677	Q8CCI5
+CoREST	Rcor1	D12Wsu95e Kiaa0071	REST corepressor 1 (Protein CoREST)	ENSMUSG00000037896	ENSMUSP00000112089	Q8CFE3
+BRG1	Smarca4		Smarca4 protein (Fragment)	ENSMUSG00000032187	ENSMUSP00000096547	Q8CGJ5
+OGT	Ogt		UDP-N-acetylglucosamine--peptide N-acetylglucosaminyltransferase 110 kDa subunit (EC 2.4.1.255) (O-GlcNAc transferase subunit p110) (O-linked N-acetylglucosamine transferase 110 kDa subunit) (OGT)	ENSMUSG00000034160	ENSMUSP00000045409	Q8CGY8
+C_MYC			C-myc proto-oncogene (Fragment)	ENSMUSG00000022346	ENSMUSP00000022971	Q8K3Z5
+CBX7	Cbx7	D15Ertd417e	Chromobox protein homolog 7	ENSMUSG00000053411	ENSMUSP00000105244	Q8VDS3
+REST	Rest	Nrsf	RE1-silencing transcription factor (Neural-restrictive silencer factor)	ENSMUSG00000029249	ENSMUSP00000079231	Q8VIG1
+MED1	Med1	Crsp210 Drip205 Pbp Pparbp Trap220 Trip2	Mediator of RNA polymerase II transcription subunit 1 (Mediator complex subunit 1) (Peroxisome proliferator-activated receptor-binding protein) (PBP) (PPAR-binding protein) (Thyroid hormone receptor-associated protein complex 220 kDa component) (Trap220) (Thyroid receptor-interacting protein 2) (TR-interacting protein 2) (TRIP-2)	ENSMUSG00000018160	ENSMUSP00000103169	Q925J9
+MI2B	Chd4		Chd4 protein (Fragment)	ENSMUSG00000063870	ENSMUSP00000060054	Q99JM0
+STAT3			STAT3 (Fragment)	ENSMUSG00000004040	ENSMUSP00000120152	Q99ML3
+RING1B	Rnf2	DinG Ring1b	E3 ubiquitin-protein ligase RING2 (EC 6.3.2.-) (RING finger protein 1B) (RING1b) (RING finger protein 2)	ENSMUSG00000026484	ENSMUSP00000075476	Q9CQJ4
+TCF3	Tcf3	Tcfe2a	Putative uncharacterized protein (Fragment)	ENSMUSG00000020167	ENSMUSP00000100979	Q9CRT1
+SMC1	Smc1a	Sb1.8 Smc1 Smc1l1 Smcb	Structural maintenance of chromosomes protein 1A (SMC protein 1A) (SMC-1-alpha) (SMC-1A) (Chromosome segregation protein SmcB) (Sb1.8)	ENSMUSG00000041133	ENSMUSP00000044645	Q9CU62
+SMC3	Smc3	Bam Bmh Cspg6 Mmip1 Smc3l1 Smcd	Structural maintenance of chromosomes protein 3 (SMC protein 3) (SMC-3) (Basement membrane-associated chondroitin proteoglycan) (Bamacan) (Chondroitin sulfate proteoglycan 6) (Chromosome segregation protein SmcD) (Mad member-interacting protein 1)	ENSMUSG00000024974	ENSMUSP00000025930	Q9CW03
+PHF19	Phf19	Pcl3	PHD finger protein 19 (Polycomb-like protein 3)	ENSMUSG00000026873	ENSMUSP00000028232	Q9CXG9
+CBX3	Cbx3		Cbx3 protein (Chromobox protein homolog 3) (MCG119115, isoform CRA_a)	ENSMUSG00000029836	ENSMUSP00000031862	Q9DCC5
+G9A	Ehmt2	Bat8 G9a Ng36	Histone-lysine N-methyltransferase EHMT2 (EC 2.1.1.-) (EC 2.1.1.43) (Euchromatic histone-lysine N-methyltransferase 2) (HLA-B-associated transcript 8) (Histone H3-K9 methyltransferase 3) (H3-K9-HMTase 3) (Protein G9a)	ENSMUSG00000013787	ENSMUSP00000013931	Q9Z148
+MECP2	Mecp2		Methyl-CpG-binding protein 2 (MeCp-2 protein) (MeCp2)	ENSMUSG00000031393	ENSMUSP00000033770	Q9Z2D6
+MBD4	Mbd4		Methyl-CpG-binding domain protein 4 (EC 3.2.2.-) (Methyl-CpG-binding protein MBD4) (Mismatch-specific DNA N-glycosylase)	ENSMUSG00000030322	ENSMUSP00000032469	Q9Z2D7
+MBD3	Mbd3		Methyl-CpG-binding domain protein 3 (Methyl-CpG-binding protein MBD3)	ENSMUSG00000035478	ENSMUSP00000089948	Q9Z2D8
+MBD2	Mbd2		Methyl-CpG-binding domain protein 2 (Methyl-CpG-binding protein MBD2)	ENSMUSG00000024513	ENSMUSP00000073701	Q9Z2E1
+MBD1	Mbd1		Methyl-CpG-binding domain protein 1 (Methyl-CpG-binding protein MBD1)	ENSMUSG00000024561	ENSMUSP00000095137	Q9Z2E2

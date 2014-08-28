@@ -7,6 +7,7 @@ my $statesFile = $ARGV[0];
 my $netOrnodes = $ARGV[1];
 my $geoCodesFile = $ARGV[2];
 my $complexesFile = $ARGV[3];
+my $mappingsFile = $ARGV[4];
 
 my %histoneMods = ("H3K9me3",1, "H3K9ac",1, "H3K27ac",1,"H3K79me2",1,"H3K27me3",1,
 "H3K4me2",1,"H3K36me2",1,"H3K36me3",1,"H4K20me3",1,"H3K4me3",1,"H3K4me1",1, "H2Aub1", 1, "H2AZ", 1);
@@ -19,6 +20,13 @@ my %stateType = ("1","Elongation","2","Elongation","3","Elongation","4","Elongat
 
 my %geo = %{getGEOFile($geoCodesFile)};
 my %complexes = %{getComplexesFile($complexesFile)};
+
+my ($genenamesref, $descriptionref, $ensemblgeneref, $ensemblproteinref, $uniprotref) = getMappings($mappingsFile);
+my %genenames = %{$genenamesref};
+my %description = %{$descriptionref};
+my %ensemblgene = %{$ensemblgeneref};
+my %ensemblprotein = %{$ensemblproteinref};
+my %uniprot = %{$uniprotref};
 
 open(STATESFILE, $statesFile);
 my @stateslines = <STATESFILE>;
@@ -80,6 +88,11 @@ if($netOrnodes eq "net"){
     $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth,\%complexes);
     $thisnode{"complex"}=getComplex($nodename, \%complexes);
     $thisnode{"geo"}=getGEO($nodename, \%geo);
+    $thisnode{"gene_names"}=getGeneNames($nodename, \%genenames);
+    $thisnode{"description"}=getDescription($nodename, \%description);
+    $thisnode{"ensemblgene"}=getEnsemblGene($nodename, \%ensemblgene);
+    $thisnode{"ensemblprotein"}=getEnsemblProtein($nodename, \%ensemblprotein);
+    $thisnode{"uniprot"}=getUniprot($nodename, \%uniprot);
     $thisnode{"fixed"}=getFixed($nodename, \%histoneMods, \%dnaMeth);
     my $type = getType($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"type"}= $type;
@@ -246,13 +259,63 @@ sub getGEO{
   }
 }
 
+sub getGeneNames{
+  my $id=$_[0];
+  my %genenames=%{$_[1]};
+  if(defined($genenames{$id})){
+    return(join(" // ", @{$genenames{$id}}));
+  }else{
+    return("None");
+  }
+}
+
+sub getDescription{
+  my $id=$_[0];
+  my %description=%{$_[1]};
+  if(defined($description{$id})){
+    return($description{$id});
+  }else{
+    return("None");
+  }
+}
+
+sub getEnsemblGene{
+  my $id=$_[0];
+  my %ensemblgene=%{$_[1]};
+  if(defined($ensemblgene{$id})){
+    return($ensemblgene{$id});
+  }else{
+    return("None");
+  }
+}
+
+sub getEnsemblProtein{
+  my $id=$_[0];
+  my %ensemblprotein=%{$_[1]};
+  if(defined($ensemblprotein{$id})){
+    return($ensemblprotein{$id});
+  }else{
+    return("None");
+  }
+}
+
+sub getUniprot{
+  my $id=$_[0];
+  my %uniprot=%{$_[1]};
+  if(defined($uniprot{$id})){
+    return($uniprot{$id});
+  }else{
+    return("None");
+  }
+}
+
 sub getComplex{
   my $id=$_[0];
   my %complex=%{$_[1]};
   if(defined($complex{$id})){
     return($complex{$id});
   }else{
-    return("none");
+    return("None");
   }
 }
 
@@ -289,4 +352,33 @@ sub getComplexesFile{
     }
   }
   return(\%complexes);
+}
+
+sub getMappings{
+  my $mappingsFile = $_[0];
+  
+  my %genenames;
+  my %description;
+  my %ensemblgene;
+  my %ensmeblprotein;
+  my %uniprot;
+  
+  open(INFILE, $mappingsFile);
+  my @inlines = <INFILE>;
+  close(INFILE);
+  
+  for(my $i=1;$i<scalar(@inlines);$i++){
+    my $line = $inlines[$i];
+    chomp($line);
+    my @fields = split(/\t/, $line);
+    push(@{$genenames{$fields[0]}}, $fields[1]);
+    if($fields[2] ne ""){
+      push(@{$genenames{$fields[0]}}, $fields[2]);
+    }
+    $description{$fields[0]}=$fields[3];
+    $ensemblgene{$fields[0]}=$fields[4];
+    $ensemblprotein{$fields[0]}=$fields[5];
+    $uniprot{$fields[0]}=$fields[6];
+  }
+  return(\%genenames, \%description, \%ensemblgene, \%ensemblprotein, \%uniprot);
 }
