@@ -318,16 +318,28 @@
         $("#pop-up-node").fadeOut(100,function () {
             // Popup content
             $("#node-title").html(d.Entry);
-            if(d.complex != "none"){
-              $("#complex").html(d.complex);
+            $("#complex").html(d.complex);
+            $("#genenames").html(d.gene_names);
+            $("#genedescription").html(d.description);
+            if(d.string != "None"){
+              $("#string").html($("<a></a>").attr('href', ""+d.string).text(d.string));
+            }
+            if(d.uniprot != "None"){
+              $("#uniprot").html($("<a></a>").attr('href', "http://www.uniprot.org/uniprot/"+d.uniprot).text(d.uniprot));
             }else{
-              $("#complex").html("None");
+              $("#uniprot").html("None");
             }
             if(d.geo != "none"){
               $("#geo").html($("<a></a>").attr('href', "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+d.geo).text(d.geo));
             }else{
               $("#geo").html("None");
             }
+            if(d.ensemblprotein != "None"){
+              $("#ensembl").html($("<a></a>").attr('href', "http://www.ensembl.org/Mus_musculus/Transcript/Summary?db=core;t="+d.ensemblprotein).text(d.ensemblprotein));
+            }else{
+              $("#ensembl").html("None");
+            }
+
             // $("#nodename").html(d.Protein_names);
             // $("#uniprot").html(d.Entry);
             // $("#gofun").html(d.GO_ref);
