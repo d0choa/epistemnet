@@ -68,16 +68,14 @@ span.text-primary{
 
 
 #mainpanel {
-    margin-top: 15px;
-    margin-left: 5px;
-    padding-right: 20px;
-    padding-left: 20px;
-    padding-bottom: 10px;
+    padding: 10px;
     background-color: rgba(255, 255, 255, .6);
     z-index: 20;
+    float:right;
+    width:225px;
+    border: 1px solid #a6a6a6;
     position:fixed;
-    right:15px;
-    border: 1px solid #a6a6a6
+    right:0px;
 }
 
 .link.negative {

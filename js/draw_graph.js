@@ -422,7 +422,7 @@
 				.addClass('checkbox')
 				.attr("id", elementId)
 			var labelContainer = $('<label></label>').text("State " + state)
-		        .append($('<input></input>')
+		        .prepend($('<input></input>')
 					.prop('type', 'checkbox')
           .addClass(statetypes[state])
 					.change(function() {
