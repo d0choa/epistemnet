@@ -121,16 +121,10 @@
   // kicks off the loading/processing of `local` and `prefetch`
   nodeEngine.initialize();
  
-  $('#srch-term').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: 1},
-  {
-    name: 'nodes',
-    displayKey: 'value',
-    source: nodeEngine.ttAdapter()
-  });
-  
+  $.get('data/nodes.json', function(data){
+      $("#srch-term").typeahead({ source:data });
+  },'json');
+   
 	$('#srch-term').on('change', function (e) {
 		var val = $.trim($('#srch-term').val());
 		searchNodes(val);
