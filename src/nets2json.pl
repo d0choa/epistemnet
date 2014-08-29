@@ -8,6 +8,7 @@ my $netOrnodes = $ARGV[1];
 my $geoCodesFile = $ARGV[2];
 my $complexesFile = $ARGV[3];
 my $mappingsFile = $ARGV[4];
+my $nodeColorsFile = $ARGV[5];
 
 my %histoneMods = ("H3K9me3",1, "H3K9ac",1, "H3K27ac",1,"H3K79me2",1,"H3K27me3",1,
 "H3K4me2",1,"H3K36me2",1,"H3K36me3",1,"H4K20me3",1,"H3K4me3",1,"H3K4me1",1, "H2Aub1", 1, "H2AZ", 1);
@@ -20,6 +21,7 @@ my %stateType = ("1","Elongation","2","Elongation","3","Elongation","4","Elongat
 
 my %geo = %{getGEOFile($geoCodesFile)};
 my %complexes = %{getComplexesFile($complexesFile)};
+my %colors = %{getColorsFile($nodeColorsFile)};
 
 my ($genenamesref, $descriptionref, $ensemblgeneref, $ensemblproteinref, $uniprotref) = getMappings($mappingsFile);
 my %genenames = %{$genenamesref};
@@ -85,7 +87,7 @@ if($netOrnodes eq "net"){
 		$thisnode{"index"}=$nodeIndex{$nodename};
     $thisnode{"shape"}=getShape($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"size"}=getSize($nodename, \%histoneMods, \%dnaMeth);
-    $thisnode{"nodecolor"}=getColor($nodename, \%histoneMods, \%dnaMeth,\%complexes);
+    $thisnode{"nodecolor"}=getColor($nodename, \%colors);
     $thisnode{"complex"}=getComplex($nodename, \%complexes);
     $thisnode{"geo"}=getGEO($nodename, \%geo);
     $thisnode{"gene_names"}=getGeneNames($nodename, \%genenames);
@@ -177,33 +179,14 @@ sub getSize{
 
 sub getColor{
   my $id=$_[0];
-  my %histoneMods = %{$_[1]};
-  my %dnaMeth = %{$_[2]};
-  my %complex = %{$_[3]};
-  
+  my %colors = %{$_[1]};
+    
   my %complexColor;
   my %visitedComplex;
-  my $colorCounter=5;
-  my @keys = keys %complex;
-  foreach my $key (@keys){
-    my $complexName = $complex{$key};
-    if(!defined($visitedComplex{$complexName})){
-      $complexColor{$complexName}=$colorCounter;
-      $colorCounter++;
-      $visitedComplex{$complexName}=1;
-    }
-  }
-  
-  if(defined($histoneMods{$id})){
-    return("3");
-  }elsif(defined($dnaMeth{$id})){
-    return("1");
-  }elsif(defined($CTCF{$id})){
-    return("4");
-  }elsif(defined($complexes{$id})){
-    return($complexColor{$complexes{$id}});
+  if(defined($colors{$id})){
+    return($colors{$id});
   }else{
-    return("2");
+    return("#d9d9d9")
   }
 }
 
@@ -373,10 +356,7 @@ sub getMappings{
     my @fields = split(/\t/, $line);
     push(@{$genenames{$fields[0]}}, $fields[1]);
     if($fields[2] ne ""){
-		my @allalternatives = split(" ", $fields[2]);
-		foreach my $altern (@allalternatives){
-	        push(@{$genenames{$fields[0]}}, $altern);
-		}
+      push(@{$genenames{$fields[0]}}, $fields[2]);
     }
     $description{$fields[0]}=$fields[3];
     $ensemblgene{$fields[0]}=$fields[4];
@@ -384,4 +364,23 @@ sub getMappings{
     $uniprot{$fields[0]}=$fields[6];
   }
   return(\%genenames, \%description, \%ensemblgene, \%ensemblprotein, \%uniprot);
+}
+
+sub getColorsFile{
+  my $inputFile = $_[0];
+  open(INFILE, $inputFile);
+  my @inlines = <INFILE>;
+  close(INFILE);
+  
+  my %colors;
+  for(my $i=1;$i<scalar(@inlines);$i++){
+    my $line = $inlines[$i];
+    chomp($line);
+    my @fields = split(/\t/, $line);
+    if(defined($fields[0])){
+      $colors{$fields[0]}=$fields[1];
+    }
+  }
+  return(\%colors);
+  
 }
