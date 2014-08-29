@@ -61,10 +61,33 @@
 	       </div>
 			</div>
 		</div>
+    <div id="slide-panel" style="display: none;">
+        <a href="#" class="btn btn-danger" id="opener"><i class="glyphicon glyphicon-question-sign"></i></a>
+        <h3>Legend</h3>
+        <dl class="dl-horizontal">
+          <dt>Histone Mark</dt>
+          <dd id="hmark">
+            <svg width="30" height="30">
+              <rect x="3" y="3" width="24" height="24" stroke="#636363" fill="#d9d9d9" stroke-width="3"/>
+            </svg>
+          </dd>          
+          <dt>Cytosine Modifications</dt>
+          <dd id="cytmod">
+            <svg width="30" height="30">
+              <polygon points="04,15 15,28 26,15 15,02" stroke="#636363" fill="#d9d9d9" stroke-width="3"/>
+            </svg>
+          </dd>          
+          <dt>CrPs</dt>
+          <dd id="crps">
+            <svg width="30" height="30">
+              <circle cx="15" cy="15" r="12.5" stroke="#636363" fill="#d9d9d9" stroke-width="3"/>
+            </svg>
+          </dd>       
+        </dl>        
+    </div>
 		<div id="mainpanel" class="col-md-2" style="display: none;">
 		    <h5><span class="glyphicon glyphicon-check"></span> Chromatin States</h5>
-		</div>
-		
+		</div>    
 		<div class="cntainr" id="netCon">
 			<div id="network-view" style="height:100%;width:100%"></div>				
 		</div>

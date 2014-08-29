@@ -138,6 +138,7 @@
   
   $('#skipbutton').on('click',function(e){
     $("#loadingCon").fadeOut();
+		$("#sidebar").fadeIn();
   })
   
   $("#about").click(function() {
@@ -499,6 +500,7 @@
       .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.CTCF_Insulator').prop('checked', true).trigger('change')}))
       .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.CTCF_Insulator').prop('checked', false).trigger('change')}))
     
+    
 		// Use a timeout to allow the rest of the page to load first.
 		setTimeout(function() {
 			gnodes.attr("transform", function(d) {
@@ -564,6 +566,7 @@
 			// vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
       $("#loadingDiv").fadeTo( 1000, 0 );
 			$("#mainpanel").fadeIn();
+			$("#slide-panel").fadeIn();
       $("#skipbutton").prop('disabled', false);
 			
 			
@@ -667,6 +670,13 @@
           gnode.parentNode.appendChild(gnode);
       });
   }
-	
-	// $(document).ready(function() {
-	// });
+  
+	$('#opener').on('click', function() {		
+		var panel = $('#slide-panel');
+		if (panel.hasClass("visible")) {
+			panel.removeClass('visible').animate({'margin-left':'-300px'});
+		} else {
+			panel.addClass('visible').animate({'margin-left':'0px'});
+		}	
+		return false;	
+	});

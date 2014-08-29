@@ -132,3 +132,20 @@ span.text-primary{
 .tt-suggestion p {
     margin: 0;
 }
+
+#slide-panel {
+    width:300px;
+    height:300px;
+    padding:10px;
+    margin-left:-300px;
+    background-color: rgba(255, 255, 255, .6);
+    z-index: 20;
+    position:fixed;
+    border: 1px solid #a6a6a6;
+    
+}
+#opener {
+    float:right;
+    margin:-10px -50px 0px 0px;
+    border-radius:0;
+}
