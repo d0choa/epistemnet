@@ -48,8 +48,8 @@
 			$(".pop-up").fadeOut(50);
 			previousd="";
 			// d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
-			d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).brighter(); });
-			d3.selectAll('[highlighted=true]').style("stroke", function(d) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).darker(); });
+			d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
+			d3.selectAll('[highlighted=true]').style("stroke", function(d) { return d3.rgb(d.nodecolor).darker(); });
 			d3.selectAll('[highlighted=true]').attr("highlighted",false);
 		});	
 	
@@ -139,7 +139,7 @@
 	function searchNodes(nodeNames){
 		// deletee previous
 		// d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
-		d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).brighter(); });
+		d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
 		d3.selectAll('[highlighted=true]').attr("highlighted",false);
 		
 		if(nodeNames != ''){
@@ -203,10 +203,10 @@
 			// .on ("mouseout",mout)
 			.attr('main', function(d) {return d.Entry})
         // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
-        .style("stroke", function(d) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).darker(); })
+        .style("stroke", function(d) { return d3.rgb(d.nodecolor).darker(); })
         .style("stroke-width", 0.5)
 			// .style("fill", function(d) { return color(d.GO_ref); });
-			.style("fill", function(d,i) { return d3.rgb(nodecolor(parseInt(d.nodecolor))).brighter(); });
+			.style("fill", function(d,i) { return d3.rgb(d.nodecolor); });
 		var labels = gnodes.append("text")
     	.attr("dy", ".4em")
     	.attr("text-anchor", "middle")
