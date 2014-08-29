@@ -212,8 +212,8 @@
 			// .on ("mouseout",mout)
 			.attr('main', function(d) {return d.Entry})
         // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
-        .style("stroke", function(d) { if(d.type != "proteins"){return d3.rgb("#636363")}else{return d3.rgb(d.nodecolor).darker()}})
-        .style("stroke-width", function(d) { if(d.type != "proteins"){return 1.5}else{return 1}})
+        .style("stroke", function(d) { if(d.type != "proteins" || d.Entry == "CTCF"){return d3.rgb("#636363")}else{return d3.rgb(d.nodecolor).darker()}})
+        .style("stroke-width", function(d) { if(d.type != "proteins" || d.Entry == "CTCF"){return 2}else{return 1}})
 			// .style("fill", function(d) { return color(d.GO_ref); });
 			.style("fill", function(d,i) { return d3.rgb(d.nodecolor); });
 		var labels = gnodes.append("text")
