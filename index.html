@@ -32,22 +32,30 @@
               </div>
             </form>
           </div>
-          <!-- <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">About</a></li>
-          </ul> -->
+          <ul class="nav navbar-nav navbar-right">
+            <li><a id="about" href="#">About</a></li>
+          </ul>
         </div>			
 			</div>
-		</div>		
+		</div>
 		<div class="cntainr" id="loadingCon">
 			<div class="loadingbox" style="height:100%;display:table-cell;vertical-align:middle;">
 	       <div style="float:none;margin:0 auto;">
-           <div style="width:650px;margin:0 auto;">
-             <div class="jumbotron" style="margin:0 auto;float:none;">
-               <h4>EpiStemNet - A network of chromatin component co-location in ESC</h4>
-               <p>Simulating Layout. One moment please...</p>
+           <div style="width:800px;margin:0 auto;">
+             <div class="jumbotron clearfix" style="margin:0 auto;float:none;">
+               <h1>EpiStemNet</h1>
+               <p>EpiStemNet contains a comprehensive network of epigenomic relationships in mESC. This epigenetic map describes a collection of 139 previously described assays including ChIP-Seq, MeDIP and GLIB analysis. As a consequece, we derive a network of ESC regulators containing 3 types of cytosine modifications (5mC, 5hmC and 5fC), 13 histone marks and 61 Chromatin related Proteins (CrPs) including the ESC master regulators Nanog, Oct4 and Sox2</p>
+               <blockquote>
+                 <p>A large scale chromatin and DNA methylation network in embryonic stem cells. Network construction, functional analysis and co evolutionary model. <em>Enrique Carrillo de Santa Pau, Juliane Perner, David Juan, Simone Marsili, David Ochoa, Ho-Ryun Chung, Daniel Rico, Martin Vingron and Alfonso Valencia</em></p>
+                 <small>Under review <cite title="Source Title">Nature Genetics</cite></small>
+               </blockquote>
+               <div id="loadingDiv">
+                 <p>Simulating Layout. One moment please...</p>
                  <div class="progress">
                      <div class="progress-bar" aria-valuemax="36"></div>
                  </div>
+               </div>
+               <button type="button" id="skipbutton" class="btn btn-lg btn-primary pull-right" disabled="disabled">Skip</button>  
              </div>                                          
            </div>
 	       </div>

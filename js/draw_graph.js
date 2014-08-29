@@ -135,7 +135,15 @@
 		var val = $.trim($('#srch-term').val());
 		searchNodes(val);
 	})
-  	
+  
+  $('#skipbutton').on('click',function(e){
+    $("#loadingCon").fadeOut();
+  })
+  
+  $("#about").click(function() {
+    $("#loadingCon").fadeIn();
+  });
+  
 	function searchNodes(nodeNames){
 		// deletee previous
 		// d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
@@ -554,8 +562,9 @@
 			force.stop() // stops the force auto positioning before you start dragging
 
 			// vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
-			$("#loadingCon").fadeOut();
+      $("#loadingDiv").fadeTo( 1000, 0 );
 			$("#mainpanel").fadeIn();
+      $("#skipbutton").prop('disabled', false);
 			
 			
 		}, 50);
