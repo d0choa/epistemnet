@@ -138,7 +138,10 @@
   
   $('#skipbutton').on('click',function(e){
     $("#loadingCon").fadeOut();
+		$("#netCon").fadeIn();
 		$("#sidebar").fadeIn();
+		$("#mainpanel").fadeIn();
+		$("#slide-panel").fadeIn();    
   })
   
   $("#about").click(function() {
@@ -565,8 +568,6 @@
 
 			// vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
       $("#loadingDiv").fadeTo( 1000, 0 );
-			$("#mainpanel").fadeIn();
-			$("#slide-panel").fadeIn();
       $("#skipbutton").prop('disabled', false);
 			
 			

@@ -148,3 +148,7 @@ span.text-primary{
     margin:-10px -50px 0px 0px;
     border-radius:0;
 }
+
+.jumbotron p{
+	font-size: 16px;
+}

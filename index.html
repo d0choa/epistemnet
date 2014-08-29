@@ -40,25 +40,17 @@
 		</div>
 		<div class="cntainr" id="loadingCon">
 			<div class="loadingbox" style="height:100%;display:table-cell;vertical-align:middle;">
-	       <div style="float:none;margin:0 auto;">
-           <div style="width:800px;margin:0 auto;">
-             <div class="jumbotron clearfix" style="margin:0 auto;float:none;">
-               <h1>EpiStemNet</h1>
-               <p>EpiStemNet contains a comprehensive network of epigenomic relationships in mESC. This epigenetic map describes a collection of 139 previously described assays including ChIP-Seq, MeDIP and GLIB analysis. As a consequece, we derive a network of ESC regulators containing 3 types of cytosine modifications (5mC, 5hmC and 5fC), 13 histone marks and 61 Chromatin related Proteins (CrPs) including the ESC master regulators Nanog, Oct4 and Sox2</p>
-               <blockquote>
-                 <p>A large scale chromatin and DNA methylation network in embryonic stem cells. Network construction, functional analysis and co evolutionary model. <em>Enrique Carrillo de Santa Pau, Juliane Perner, David Juan, Simone Marsili, David Ochoa, Ho-Ryun Chung, Daniel Rico, Martin Vingron and Alfonso Valencia</em></p>
-                 <small>Under review <cite title="Source Title">Nature Genetics</cite></small>
-               </blockquote>
-               <div id="loadingDiv">
-                 <p>Simulating Layout. One moment please...</p>
-                 <div class="progress">
-                     <div class="progress-bar" aria-valuemax="36"></div>
-                 </div>
-               </div>
-               <button type="button" id="skipbutton" class="btn btn-lg btn-primary pull-right" disabled="disabled">Skip</button>  
-             </div>                                          
+       <div class="jumbotron clearfix" style="margin:0 auto;float:none;width:80%;margin:0 auto;">
+         <h1>EpiStemNet</h1>
+         <p>EpiStemNet provides 20 comprehensive networks of epigenomic co-location relationships, occurring in different chromatin states, derived from a collection of 139 previously described assays including ChIP-Seq, MeDIP and GLIB analysis in mESC. Different chromatin states provide a regulatory framework functioning as epigenomic binding platforms that conditions the binding of Chromatin related Proteins (CrPs). We derive 20 chromatin state-specific networks of direct co-locations involving epigenomic features including 3 types of cytosine modifications (5mC, 5hmC and 5fC), 13 histone marks and 61 CrPs including the ESC master regulators Nanog, Oct4 and Sox2. These networks are robust global maps of the location interdependence of the different epigenomic features that considers a comprehensive compilation of key players in a variety of epigenomic processes in ESCs.</p>
+         <div id="loadingDiv">
+           <p>Simulating Layout. One moment please...</p>
+           <div class="progress">
+               <div class="progress-bar" aria-valuemax="36"></div>
            </div>
-	       </div>
+         </div>
+         <button type="button" id="skipbutton" class="btn btn-lg btn-primary pull-right" disabled="disabled">Enter</button>  
+       </div>                                          
 			</div>
 		</div>
     <div id="slide-panel" style="display: none;">
@@ -105,7 +97,7 @@
 		<div id="mainpanel" class="col-md-2" style="display: none;">
 		    <h5><span class="glyphicon glyphicon-check"></span> Chromatin States</h5>
 		</div>    
-		<div class="cntainr" id="netCon">
+		<div class="cntainr" id="netCon" style="display: none;">
 			<div id="network-view" style="height:100%;width:100%"></div>				
 		</div>
 		<div id="pop-up-node" class="pop-up">
