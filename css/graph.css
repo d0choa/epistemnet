@@ -69,7 +69,7 @@ span.text-primary{
 
 #mainpanel {
     padding: 15px;
-    background-color: rgba(255, 255, 255, .6);
+    background-color: rgba(255, 255, 255, .8);
     z-index: 20;
     float:right;
     width:225px;
@@ -86,7 +86,7 @@ span.text-primary{
     width:300px;
     padding:10px;
     margin-left:-300px;
-    background-color: rgba(255, 255, 255, .6);
+    background-color: rgba(255, 255, 255, .8);
     z-index: 20;
     position:fixed;
     border: 1px solid #a6a6a6;
