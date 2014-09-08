@@ -89,7 +89,11 @@ if($netOrnodes eq "net"){
     $thisnode{"size"}=getSize($nodename, \%histoneMods, \%dnaMeth);
     $thisnode{"nodecolor"}=getColor($nodename, \%colors);
     $thisnode{"complex"}=getComplex($nodename, \%complexes);
-    $thisnode{"geo"}=getGEO($nodename, \%geo);
+    if(getGEO($nodename, \%geo) ne "none"){
+      $thisnode{"geo"}=\@{getGEO($nodename, \%geo)};
+    }else{
+      $thisnode{"geo"}=getGEO($nodename, \%geo);
+    }
     $thisnode{"gene_names"}=getGeneNames($nodename, \%genenames);
     $thisnode{"description"}=getDescription($nodename, \%description);
     $thisnode{"ensemblgene"}=getEnsemblGene($nodename, \%ensemblgene);
@@ -236,7 +240,7 @@ sub getGEO{
   my $id=$_[0];
   my %geo=%{$_[1]};
   if(defined($geo{$id})){
-    return($geo{$id});
+    return(\@{$geo{$id}});
   }else{
     return("none");
   }
@@ -314,7 +318,7 @@ sub getGEOFile{
     my $line = $inlines[$i];
     chomp($line);
     my @fields = split(/,/,$line);
-    $geo{$fields[0]}=$fields[1];
+    push(@{$geo{$fields[0]}}, $fields[1])
   }
   return(\%geo);
 }
@@ -356,7 +360,10 @@ sub getMappings{
     my @fields = split(/\t/, $line);
     push(@{$genenames{$fields[0]}}, $fields[1]);
     if($fields[2] ne ""){
-      push(@{$genenames{$fields[0]}}, $fields[2]);
+      my @options = split(/\s/, $fields[2]);
+      foreach my $alternate (@options){
+        push(@{$genenames{$fields[0]}}, $alternate);
+      }
     }
     $description{$fields[0]}=$fields[3];
     $ensemblgene{$fields[0]}=$fields[4];
