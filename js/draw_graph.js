@@ -343,7 +343,7 @@
 			if(d.uniprot != "None"){
 				$("#uniprot").html($("<div></div>")
 					.append($("<span></span>").addClass("minititle").text("Uniprot: "))
-					.append($("<span></span>").html(d.uniprot))
+					.append($("<span></span>").html($("<a></a>").attr('target', '_blank').attr('href', "http://www.uniprot.org/uniprot/"+d.uniprot).text(d.uniprot)))
 				)
 			}else{
 				$("#uniprot").html('');
@@ -351,7 +351,7 @@
 			if(d.geo != "none"){
 				$("#geo").html($("<div></div>")
 					.append($("<span></span>").addClass("minititle").text("GEO ChipSeq: "))
-					.append($("<span></span>").html($("<a></a>").attr('href', "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+d.geo).text(d.geo)))
+					.append($("<span></span>").html($("<a></a>").attr('target', '_blank').attr('href', "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+d.geo).text(d.geo)))
 				)
 			}else{
 				$("#geo").html('');
@@ -359,7 +359,7 @@
 			if(d.ensemblprotein != "None"){
 				$("#ensembl").html($("<div></div>")
 					.append($("<span></span>").addClass("minititle").text("Ensembl: "))
-					.append($("<span></span>").html($("<a></a>").attr('href', "http://www.ensembl.org/Mus_musculus/Transcript/Summary?db=core;t="+d.ensemblprotein).text(d.ensemblprotein)))
+					.append($("<span></span>").html($("<a></a>").attr('target', '_blank').attr('href', "http://www.ensembl.org/Mus_musculus/Transcript/Summary?db=core;t="+d.ensemblprotein).text(d.ensemblprotein)))
 				)
 			}else{
 				$("#ensembl").html('');
