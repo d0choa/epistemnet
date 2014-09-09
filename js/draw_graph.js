@@ -349,10 +349,19 @@
 				$("#uniprot").html('');
 			}
 			if(d.geo != "none"){
-				$("#geo").html($("<div></div>")
-					.append($("<span></span>").addClass("minititle").text("GEO ChipSeq: "))
-					.append($("<span></span>").html($("<a></a>").attr('target', '_blank').attr('href', "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+d.geo).text(d.geo)))
-				)
+				$("#geo").html('');
+				$("#geo").append($("<span></span>").addClass("minititle").text("GEO ChipSeq: "))
+        $.each(d.geo, function(i,value){
+    			var span = $("<span></span>").html($("<a></a>")
+            .attr('target', '_blank')
+            .attr('href', "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc="+value)
+            .text(value)
+          )
+          $("#geo").append(span)
+          if(i != (d.geo.length - 1)){
+            $("#geo").append($("<span>, </span>"))
+          }             
+				})
 			}else{
 				$("#geo").html('');
 			}
