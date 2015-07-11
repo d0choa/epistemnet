@@ -1,262 +1,237 @@
-    "use strict";
+"use strict";
 
-    var NETWORK_LOCAL_DATA_URI = 'data/net.json';
-    var NETWORK_WINDOW_TAG = "#network-view";
+var NETWORK_LOCAL_DATA_URI = 'data/net.json';
+var NETWORK_WINDOW_TAG = "#network-view";
 
-	var w = window,
-		d = document,
-		e = d.documentElement,
-		g = $(NETWORK_WINDOW_TAG),
-		thewidth = w.innerWidth|| e.clientWidth || g.clientWidth,
-		theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
+var w = window,
+    d = document,
+    e = d.documentElement,
+    g = $(NETWORK_WINDOW_TAG),
+    thewidth = w.innerWidth|| e.clientWidth || g.clientWidth,
+    theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
 
-	var n = 100;
-	var r = 9;
-    var trans=[0,0];
-  var scale=1;
-	var color = d3.scale.category20();
-	var nodecolor = d3.scale.category10();
-	var previousd;
-	var counter=0;
-	var centerx;
-	var centery;
-    // used to store the number of links between two nodes. 
-    // mLinkNum[data.links[i].source + "," + data.links[i].target] = data.links[i].linkindex;
-    var mLinkNum = {};
-	var nodes = {};
-	var minLinks={};
-	
-	var test;
-    var zoom = d3.behavior.zoom()
-        .scaleExtent([0.5, 10])
-        .on("zoom", redraw);
-		
-	var vis = d3.select(NETWORK_WINDOW_TAG)
-		.append("svg")
-		.attr("id", "playgraph")
-		.attr("viewBox", "0 0 " + thewidth + " " + theheight)
-		.attr("preserveAspectRatio", "xMidYMid meet")
-		.attr("pointer-events", "all")
-		.call(zoom)
-		.append('svg:g')		 
-	
-	var rect = vis.append('svg:rect')
-		.attr('width', thewidth)
-		.attr('height', theheight)
-		.attr('fill', 'white')
-		.on("click", function(){
-			$(".pop-up").fadeOut(50);
-			previousd="";
-			// d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
-			d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
-			d3.selectAll('[highlighted=true]').style("stroke", function(d) { return d3.rgb(d.nodecolor).darker(); });
-			d3.selectAll('[highlighted=true]').attr("highlighted",false);
-		});	
-	
-	var force = d3.layout.force()
-      // .linkDistance(200)
-      .charge(-2500)
-	    // .linkDistance(10)
-	    // .linkStrength(2)
-	    .size([thewidth, theheight])
-	
-  var drag = force.drag()
-      .on("dragstart", dragstart);
-	  
-	var link = vis.selectAll(".link"),
-	    gnodes = vis.selectAll(".node");
-	
-  // function redraw(){
-  //   $(".pop-up").fadeOut(50);
-  //   previousd="";
-  //   trans=d3.event.translate;
-  //   scale=d3.event.scale;
-  //   // vis.attr("transform","translate(" + [thewidth/2 + trans[0] - centerx, theheight/2 + trans[1] - centery] + ")"+" scale(" + scale + ")");
-  // }
-	
+var n = 100;
+var r = 9;
+var trans=[0,0];
+var scale=1;
+var color = d3.scale.category20();
+var nodecolor = d3.scale.category10();
+var previousd;
+var counter=0;
+var centerx;
+var centery;
+// used to store the number of links between two nodes. 
+// mLinkNum[data.links[i].source + "," + data.links[i].target] = data.links[i].linkindex;
+var mLinkNum = {};
+var nodes = {};
+var minLinks={};
+
+var test;
+var zoom = d3.behavior.zoom()
+    .scaleExtent([0.5, 10])
+    .on("zoom", redraw);
+
+var vis = d3.select(NETWORK_WINDOW_TAG)
+    .append("svg")
+    .attr("id", "playgraph")
+    .attr("viewBox", "0 0 " + thewidth + " " + theheight)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .attr("pointer-events", "all")
+    .call(zoom)
+    .append('svg:g')
+
+var rect = vis.append('svg:rect')
+    .attr('width', thewidth)
+    .attr('height', theheight)
+    .attr('fill', 'white').on("click", function(){
+        $(".pop-up").fadeOut(50);
+        previousd="";
+        // d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
+        d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
+        d3.selectAll('[highlighted=true]').style("stroke", function(d) { return d3.rgb(d.nodecolor).darker(); });
+        d3.selectAll('[highlighted=true]').attr("highlighted",false);
+    });
+
+var force = d3.layout.force()
+    .charge(-2500)
+    .size([thewidth, theheight])
+
+var drag = force.drag()
+    .on("dragstart", dragstart);
+
+var link = vis.selectAll(".link"),
+    gnodes = vis.selectAll(".node");
   	
-	function dragstart(d, i) {
+function dragstart(d, i) {
     $(".pop-up").fadeOut(50);
-	}
+}
   
-	function updateWindow(){
-		thewidth = w.innerWidth || e.clientWidth || g.clientWidth;
-		theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
-		vis.attr("width", thewidth).attr("height", theheight);
-		rect.attr("width", thewidth).attr("height", theheight);
-	}
+function updateWindow(){
+    thewidth = w.innerWidth || e.clientWidth || g.clientWidth;
+    theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
+    vis.attr("width", thewidth).attr("height", theheight);
+    rect.attr("width", thewidth).attr("height", theheight);
+}
 	
-  function redraw() {
-		$(".pop-up").fadeOut(50);
-		previousd="";
-		trans=d3.event.translate;
-		scale=d3.event.scale;		
-		vis.attr("transform","translate(" + [thewidth/2 + trans[0] - centerx, theheight/2 + trans[1] - centery] + ")"+" scale(" + scale + ")");
-  }
-	
-	$(window).on("resize", function() {updateWindow()}).trigger("resize");
-	
-	$(".navbar-form").submit(function(e){
-		e.preventDefault();
-		focusOnNode($("#srch-term").val());
-	});
-	  
-	$("#srch-term").keyup(function() {
-		var val = $.trim(this.value);
-		searchNodes(val);
-	});
-	
-  // constructs the suggestion engine
-  var nodeEngine = new Bloodhound({
+function redraw() {
+    $(".pop-up").fadeOut(50);
+    previousd="";
+    trans=d3.event.translate;
+    scale=d3.event.scale;
+    vis.attr("transform","translate(" + [thewidth/2 + trans[0] - centerx, theheight/2 + trans[1] - centery] + ")"+" scale(" + scale + ")");
+}
+
+$(window).on("resize", function() {updateWindow()}).trigger("resize");
+
+$(".navbar-form").submit(function(e){
+    e.preventDefault();
+    focusOnNode($("#srch-term").val());
+});
+
+$("#srch-term").keyup(function() {
+    var val = $.trim(this.value);
+    searchNodes(val);
+});
+
+// constructs the suggestion engine
+var nodeEngine = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     prefetch: {
-      url: 'data/nodes.json',
-      filter: function(list) {
-        return $.map(list, function(node) { return { value: node }; });
-      }
+        url: 'data/nodes.json',
+        filter: function(list) {
+            return $.map(list, function(node) { return { value: node }; });
+        }
     }
-  });
- 
-  // kicks off the loading/processing of `local` and `prefetch`
-  nodeEngine.initialize();
- 
-  $.get('data/nodes.json', function(data){
-      $("#srch-term").typeahead({ source:data });
-  },'json');
-   
-	$('#srch-term').on('change', function (e) {
-		var val = $.trim($('#srch-term').val());
-		searchNodes(val);
-	})
-  
-  $('#skipbutton').on('click',function(e){
+});
+
+// kicks off the loading/processing of `local` and `prefetch`
+nodeEngine.initialize();
+
+$.get('data/nodes.json', function(data){
+    $("#srch-term").typeahead({ source:data });
+},'json');
+
+$('#srch-term').on('change', function (e) {
+    var val = $.trim($('#srch-term').val());
+    searchNodes(val);
+})
+
+$('#skipbutton').on('click',function(e){
     $("#loadingCon").fadeOut();
-		$("#netCon").fadeIn();
-		$("#sidebar").fadeIn();
-		$("#mainpanel").fadeIn();
-		$("#slide-panel").fadeIn();    
-  })
-  
-  $("#about").click(function() {
+    $("#netCon").fadeIn();
+    $("#sidebar").fadeIn();
+    $("#mainpanel").fadeIn();
+    $("#slide-panel").fadeIn();
+})
+
+$("#about").click(function() {
     $("#loadingCon").fadeIn();
-  });
+});
   
-	function searchNodes(nodeNames){
-		// deletee previous
-		// d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
-		d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
-		d3.selectAll('[highlighted=true]').attr("highlighted",false);
-		
-		if(nodeNames != ''){
-			//mark this
-			d3.selectAll('.node[main^='+nodeNames+']').style("fill","yellow");
-			d3.selectAll('.node[main^='+nodeNames+']').attr("highlighted",true);
-		}
-	}
+function searchNodes(nodeNames){
+    // deletee previous
+    d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
+    d3.selectAll('[highlighted=true]').attr("highlighted",false);
+    if(nodeNames != ''){
+        //mark this
+        d3.selectAll('.node[main^='+nodeNames+']').style("fill","yellow");
+        d3.selectAll('.node[main^='+nodeNames+']').attr("highlighted",true);
+    }
+}
+
+function focusOnNode(nodeName){
+    if(d3.selectAll('.node[main^='+nodeName+']').data().length == 1){
+        $(".pop-up").fadeOut(50);
+        d3.selectAll('.node[main^='+nodeName+']').attr("transform",
+                                                       function(d) {
+                                                           trans=[d.x*scale,d.y*scale];
+                                                           zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
+                                                           zoom.scale(scale);
+                                                       })
+        vis.transition()
+            .duration(1000)
+            .attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
+        trans=zoom.translate();
+        scale=zoom.scale();
+    }
+}
 	
-	function focusOnNode(nodeName){
-		if(d3.selectAll('.node[main^='+nodeName+']').data().length == 1){
-      $(".pop-up").fadeOut(50);
-			d3.selectAll('.node[main^='+nodeName+']').attr("transform",
-				function(d) {
-					// trans=[Math.abs(d.x)*scale,Math.abs(d.y)*scale];
-					trans=[d.x*scale,d.y*scale];
-					zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
-					zoom.scale(scale);
-			})
-			vis.transition()
-				.duration(1000)
-				.attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
-			trans=zoom.translate();
-			scale=zoom.scale();		
-		}
-	}
-	
-	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {    
+d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
     //Backup network
     test = graph;
     // sort links first
-    graph.links=sortLinks(graph.links);								
-    
+    graph.links=sortLinks(graph.links);
     // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
     var indexAndNum =setLinkIndexAndNum(graph.links);
-  		graph.links=indexAndNum[0];
-  		mLinkNum = indexAndNum[1];		
-		        
-		//Starting with the graph			
-		link = link.data(graph.links)
+    graph.links=indexAndNum[0];
+    mLinkNum = indexAndNum[1];
+    //Starting with the graph
+    link = link.data(graph.links)
         .enter().append("svg:path")
         .attr("class", function(d) {return "link " + d.type;})
         .style('stroke-width', 1.5)
         .attr("fill", "none")
-        .on("click",lover); 
-        
-		gnodes = gnodes.data(graph.nodes)
-			.enter()
-			.append('g')
-			.call(drag)
-			.on("click",mover)
-      .classed('gnode', true);
-      
-		var node = gnodes.append("path")
-      .attr("class", function(d) {return "node " + d.type;})    
-      // .attr("class", "node")
-      .attr("d", d3.svg.symbol()
-          .size(function(d) { return parseInt(d.size);})
-          .type(function(d) { return d3.svg.symbolTypes[parseInt(d.shape)]; }))
-      // .attr("r", r - .5)
-			// .on ("mouseout",mout)
-			.attr('main', function(d) {return d.Entry})
-        // .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
+        .on("click",lover);
+    gnodes = gnodes.data(graph.nodes)
+        .enter()
+        .append('g')
+        .call(drag)
+        .on("click",mover)
+        .classed('gnode', true);
+
+    var node = gnodes.append("path")
+        .attr("class", function(d) {return "node " + d.type;})
+        .attr("d", d3.svg.symbol()
+              .size(function(d) { return parseInt(d.size);})
+              .type(function(d) { return d3.svg.symbolTypes[parseInt(d.shape)]; }))
+        .attr('main', function(d) {return d.Entry})
         .style("stroke", function(d) { if(d.type != "proteins" || d.Entry == "CTCF"){return d3.rgb("#636363")}else{return d3.rgb(d.nodecolor).darker()}})
         .style("stroke-width", function(d) { if(d.type != "proteins" || d.Entry == "CTCF"){return 1.5}else{return 1}})
-			// .style("fill", function(d) { return color(d.GO_ref); });
-			.style("fill", function(d,i) { return d3.rgb(d.nodecolor); });
-		var labels = gnodes.append("text")
-    	.attr("dy", ".4em")
-    	.attr("text-anchor", "middle")
-			.style("font-size","12px")
-			.text(function(d) { return d.Entry; });
-        
-    link.style("stroke", function(d) { return color(parseInt(d.state)) });
-    
-    node.append("title")
-	      .text(function(d) { return d.Entry; });
+        .style("fill", function(d,i) { return d3.rgb(d.nodecolor); });
+    var labels = gnodes.append("text")
+        .attr("dy", ".4em")
+        .attr("text-anchor", "middle")
+        .style("font-size","12px")
+        .text(function(d) { return d.Entry; });
 
-		force
-			.links(graph.links)
-			.nodes(graph.nodes)
-			.on("tick", tick)			
-		
-	    function tick() {                
+    link.style("stroke", function(d) { return color(parseInt(d.state)) });
+    node.append("title")
+        .text(function(d) { return d.Entry; });
+
+    force
+        .links(graph.links)
+        .nodes(graph.nodes)
+        .on("tick", tick)	
+
+    function tick() {
         //Nodes
         gnodes.attr("transform", function(d) {
-          return "translate(" + d.x + "," + d.y + ")";
+            return "translate(" + d.x + "," + d.y + ")";
         });
         // Links
         link.attr("d", function(d) {
-          var dx = d.target.x - d.source.x,
-              dy = d.target.y - d.source.y,
-              dr = 0,
-              arc = 1;
-          // get the total link numbers between source and target node
-          var lTotalLinkNum = mLinkNum[d.source.index+ "," + d.target.index] || mLinkNum[d.target.index + "," + d.source.index];
-          if(lTotalLinkNum > 1){
-            dr = Math.sqrt(dx * dx + dy * dy);
-            lTotalLinkNum = Math.round((lTotalLinkNum/2)-0.1)
-            if(d.linkindex % 2 == 0){
-              arc=0;
-              // if there are multiple links between these two nodes, we need generate different dr for each path
-              dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex)/2 - 1)) - 0.2);
-            }else{
-              dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex+1)/2 - 1)) - 0.2);
+            var dx = d.target.x - d.source.x,
+                dy = d.target.y - d.source.y,
+                dr = 0,
+                arc = 1;
+            // get the total link numbers between source and target node
+            var lTotalLinkNum = mLinkNum[d.source.index+ "," + d.target.index] || mLinkNum[d.target.index + "," + d.source.index];
+            if(lTotalLinkNum > 1){
+                dr = Math.sqrt(dx * dx + dy * dy);
+                lTotalLinkNum = Math.round((lTotalLinkNum/2)-0.1)
+                if(d.linkindex % 2 == 0){
+                    arc=0;
+                    // if there are multiple links between these two nodes, we need generate different dr for each path
+                    dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex)/2 - 1)) - 0.2);
+                }else{
+                    dr = dr/(1 + ((1/lTotalLinkNum) * ((d.linkindex+1)/2 - 1)) - 0.2);
+                }
             }
-          }
-          // generate svg path
-          return "M" + d.source.x + "," + d.source.y + 
-                  "A" + dr + "," + dr + " 0 0 "+arc+ "," + d.target.x + "," + d.target.y +
-                  "A" + dr + "," + dr + " 0 0 "+(1-arc)+ "," + d.source.x + "," + d.source.y;
+            // generate svg path
+            return "M" + d.source.x + "," + d.source.y +
+                "A" + dr + "," + dr + " 0 0 "+arc+ "," + d.target.x + "," + d.target.y +
+                "A" + dr + "," + dr + " 0 0 "+(1-arc)+ "," + d.source.x + "," + d.source.y;
         });
     }
 		
