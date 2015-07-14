@@ -67,7 +67,7 @@ var arrow = vis.append("svg:defs").selectAll("marker")
     .append("svg:path")
     .style("stroke", "#BBB")
     .style("fill", "#BBB")
-    .attr("d", "M0,-5L10,0L0,5")
+    .attr("d", "M0,-3L10,0L0,3")
 
 
 var force = d3.layout.force()
@@ -202,7 +202,7 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
             if(d.directed){
                 return("url(#end)")
             }
-        })    
+        })
         .on("click",lover);
     gnodes = gnodes.data(graph.nodes)
         .enter()
