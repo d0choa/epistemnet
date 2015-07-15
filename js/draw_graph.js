@@ -179,11 +179,11 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
     //Backup network
     test = graph;
     // sort links first
-    // graph.links=sortLinks(graph.links);
+    graph.links=sortLinks(graph.links);
     // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
-    // var indexAndNum =setLinkIndexAndNum(graph.links);
-    // graph.links=indexAndNum[0];
-    // mLinkNum = indexAndNum[1];
+    var indexAndNum =setLinkIndexAndNum(graph.links);
+    graph.links=indexAndNum[0];
+    mLinkNum = indexAndNum[1];
 
     //Starting with the graph
     link = link.data(graph.links)
@@ -338,7 +338,7 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
 
     function lover(d,i) {
         $(".pop-up").fadeOut(50);
-        var thisd = d.source.name + "-" + d.target.name + "-" + d.state;
+        var thisd = d.source.name + "-" + d.target.name + "-" + d.clu;
         if(thisd != previousd){
             previousd = thisd;
             $("#pop-up-link").fadeOut(100,function () {
@@ -349,10 +349,60 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
                 }else{
                     $("#type").html("Positive");
                 }
+                // Popup position
                 // $("#state").html(d.state + " (" +d.stateType+ ")");
-                $("#state").html(d.state);
+                $("#state").html(d.clu);
+                if(d.clu == 0){
+                    $("#chromnet").html('');
+                }else{
+                    $("#chromnet").html('');
+                    $("#chromnet").html($("<div></div>")
+                                         .append($("<span></span>").addClass("minititle").text("ChromNet: "))
+                                         .append($("<span></span>").html(d.clu)))
+
+                    // $("#chromnet").append($("<span></span>").addClass("minititle").text("Chromnet: "))
+                    //     .append($("<span></span>").html(d.clu))
+                }
                 // $("#score").html(parseFloat(d.score).toFixed(3));
                 // Popup position
+                if(typeof d.pubmedid != "undefined" | typeof d.pubmedcentralid != "undefined"){
+                    $("#pubmeds").html('');
+                    $("#pubmeds").append($("<span></span>").addClass("minititle").text("Pubmeds: "))
+                    if (typeof d.pubmedid != "undefined") {
+                        $.each(d.pubmedid, function(i,value){
+                            var span = $("<span></span>").html($("<a></a>")
+                                                               .attr('target', '_blank')
+                                                               .attr('href', "http://www.ncbi.nlm.nih.gov/pubmed/"+value)
+                                                               .text(value)
+                                                              )
+                            $("#pubmeds").append(span)
+                            if(i != (d.pubmedid.length - 1)){
+                                $("#pubmeds").append($("<span>, </span>"))
+                            }
+                        });
+                    }
+                    if (typeof d.pubmedcentralid != "undefined") {
+                        if (typeof d.pubmedid != "undefined") {
+                            $("#pubmeds").append($("<span>, </span>"))
+                        }
+                        $.each(d.pubmedidpubmedcentralid, function(i,value){
+                            var span = $("<span></span>").html($("<a></a>")
+                                                               .attr('target', '_blank')
+                                                               .attr('href', "http://www.ncbi.nlm.nih.gov/pmc/articles/"+value)
+                                                               .text(value)
+                                                              )
+                            $("#pubmeds").append(span)
+                            if(i != (d.pubmedidpubmedcentralid.length - 1)){
+                                $("#pubmeds").append($("<span>, </span>"))
+                            }
+                        });
+                    }
+
+                }
+                else{
+                    $("#pubmeds").html('');
+                }
+                
                 var popLeft = ((d.source.x + d.target.x)/2*scale)+trans[0];//lE.cL[0] + 20;
                 var popTop = ((d.source.y + d.target.y)/2*scale)+trans[1];//lE.cL[1] + 70;
                 // var popLeft = (((d.source.x + d.target.x)/2)*scale)+thewidth/2-centerx+trans[0];//lE.cL[0] + 20;
@@ -368,91 +418,96 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
     $('.progress-bar').attr('aria-valuetransitiongoal', 100).progressbar();
 
     // //Get all the states and fill panel with states
-    // var states = [];
-    // $.each(graph.links, function(i,value){states.push(parseInt(value.state))})
-    //     var statetypes = [];
-    // $.each(graph.links, function(i,value){statetypes[value.state]=value.stateType.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "_")})
-    //     var uniquestates=states.filter(function(itm,i,a){
-    //         return i==a.indexOf(itm);
-    //     });
-    // uniquestates = uniquestates.sort(function(a,b){return a-b})
-    // $.each(uniquestates, function(i,state){
-    //     var elementId = "id"+state;
-    //     var checkboxContainer = $('<div></div>')
-    //         .addClass('checkbox')
-    //         .attr("id", elementId)
-    //     var labelContainer = $('<label></label>').text("State " + state)
-    //         .prepend($('<input></input>')
-    //                  .prop('type', 'checkbox')
-    //                  .addClass(statetypes[state])
-    //                  .change(
-    //                      //Preparing new list of links
-    //                      $(".pop-up").fadeOut(50);
-    //                      minLinks=[];
-    //                      var checkedValues = $('input:checkbox:checked').map(function() {
-    //                          return this.value;
-    //                      }).get();
-    //                      minLinks=test.links.filter(function(d){
-    //                          if($.inArray(d.state, checkedValues) != -1){
-    //                              return d;
-    //                          }
-    //                      });
-    //                      minLinks=sortLinksIndex(minLinks);
-    //                      // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
-    //                      mLinkNum=[];
-    //                      var indexAndNum =setLinkIndexAndNum(minLinks);
-    //                      minLinks=indexAndNum[0];
-    //                      mLinkNum = indexAndNum[1];
-    //                      force.links(minLinks);
-    //                      //link representation
-    //                      link = link.data(minLinks)
-    //                      link.enter().append("svg:path")
-    //                          .attr("fill", "none")
-    //                          .on("click",lover);
-    //                      link.style("stroke", function(d) { return color(parseInt(d.state)) })
-    //                      link.attr("class", function(d) {return "link " + d.type;})
-    //                      link.exit().remove();
-    //                      keepNodesOnTop();
-    //                      force.start();
-    //                  })
-    //         .prop("checked", true).val(state))
-    //        .attr("width","50px")
-    //        .attr("height","10px");
-    //        checkboxContainer.append(labelContainer);
-    //        $("#mainpanel").append(checkboxContainer);
-    //        var hashedid = "#"+elementId;
-    //        var rectpanel = d3.select(String(hashedid))
-    //            .append("svg")
-    //            .attr("width", 60)
-    //            .attr("height", 8);
-    //        rectpanel.append("svg:line")
-    //        .attr("x1", 10)
-    //        .attr("y1", 1)
-    //        .attr("x2", 60)
-    //        .attr("y2", 1)
-    //        .attr("stroke-width", 5)
-    //        .style("stroke", color(parseInt(state)))
-    //       })
+    var states = [];
+    $.each(graph.links, function(i,value){states.push(parseInt(value.clu))});
+    var statetypes = [];
+    $.each(graph.links, function(i,value){
+        if(value.clu != 0){
+            statetypes[value.clu]=value.stateType.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "_")
+        }
+    });
+    var uniquestates=states.filter(function(itm,i,a){
+        return i==a.indexOf(itm);
+    });
+    uniquestates = uniquestates.sort(function(a,b){return a-b})
+    // console.log(uniquestates)
+    $.each(uniquestates, function(i,state){
+        var elementId = "id"+(state+1);
+        var checkboxContainer = $('<div></div>')
+            .addClass('checkbox')
+            .attr("id", elementId)
+        var labelContainer = $('<label></label>').text("ChromNet " + (state+1))
+            .prepend($('<input></input>')
+                     .prop('type', 'checkbox')
+                     .addClass(statetypes[state])
+                     // .change(
+                         // //Preparing new list of links
+                         // $(".pop-up").fadeOut(50);
+                         // minLinks=[];
+                         // var checkedValues = $('input:checkbox:checked').map(function() {
+                         //     return this.value;
+                         // }).get();
+                         // minLinks=test.links.filter(function(d){
+                         //     if($.inArray(d.state, checkedValues) != -1){
+                         //         return d;
+                         //     }
+                         // });
+                         // minLinks=sortLinksIndex(minLinks);
+                         // // set up linkIndex and linkNumer, because it may possible multiple links share the same source and target node
+                         // mLinkNum=[];
+                         // var indexAndNum =setLinkIndexAndNum(minLinks);
+                         // minLinks=indexAndNum[0];
+                         // mLinkNum = indexAndNum[1];
+                         // force.links(minLinks);
+                         // //link representation
+                         // link = link.data(minLinks)
+                         // link.enter().append("svg:path")
+                         //     .attr("fill", "none")
+                         //     .on("click",lover);
+                         // link.style("stroke", function(d) { return color(parseInt(d.state)) })
+                         // link.attr("class", function(d) {return "link " + d.type;})
+                         // link.exit().remove();
+                         // keepNodesOnTop();
+                         // force.start();
+                     // })
+            .prop("checked", false).val(state))
+           .attr("width","50px")
+           .attr("height","10px");
+           checkboxContainer.append(labelContainer);
+           $("#mainpanel").append(checkboxContainer);
+           var hashedid = "#"+elementId;
+           // var rectpanel = d3.select(String(hashedid))
+           //     .append("svg")
+           //     .attr("width", 60)
+           //     .attr("height", 8);
+           // rectpanel.append("svg:line")
+           // .attr("x1", 10)
+           // .attr("y1", 1)
+           // .attr("x2", 60)
+           // .attr("y2", 1)
+           // .attr("stroke-width", 5)
+           // .style("stroke", color(parseInt(state)))
+          })
 
-    //     //All labels
-    //     var elong = $("<h5></h5>").text("Elongation ").insertBefore("#id1")
-    //         .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Elongation').prop('checked', true).trigger('change')}))
-    //         .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Elongation').prop('checked', false).trigger('change')}))
-    //     var hetero = $("<h5></h5>").text("Heterochromatin ").insertBefore("#id6")
-    //         .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Heterochromatin').prop('checked', true).trigger('change')}))
-    //         .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Heterochromatin').prop('checked', false).trigger('change')}))
-    //     var enhan = $("<h5></h5>").text("Enhancer ").insertBefore("#id11")
-    //         .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Enhancer').prop('checked', true).trigger('change')}))
-    //         .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Enhancer').prop('checked', false).trigger('change')}))
-    //     var active = $("<h5></h5>").text("Activation ").insertBefore("#id15")
-    //         .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Activation').prop('checked', true).trigger('change')}))
-    //         .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Activation').prop('checked', false).trigger('change')}))
-    //     var repress = $("<h5></h5>").text("Repression ").insertBefore("#id18")
-    //         .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Repression').prop('checked', true).trigger('change')}))
-    //         .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Repression').prop('checked', false).trigger('change')}))
-    //     var ctcf = $("<h5></h5>").text("CTCF/insulator ").insertBefore("#id20")
-    //         .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.CTCF_Insulator').prop('checked', true).trigger('change')}))
-    //         .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.CTCF_Insulator').prop('checked', false).trigger('change')}))
+        //All labels
+        // var elong = $("<h5></h5>").text("Elongation ").insertBefore("#id1")
+            // .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Elongation').prop('checked', true).trigger('change')}))
+            // .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Elongation').prop('checked', false).trigger('change')}))
+        // var hetero = $("<h5></h5>").text("Heterochromatin ").insertBefore("#id6")
+            // .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Heterochromatin').prop('checked', true).trigger('change')}))
+            // .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Heterochromatin').prop('checked', false).trigger('change')}))
+        // var enhan = $("<h5></h5>").text("Enhancer ").insertBefore("#id11")
+            // .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Enhancer').prop('checked', true).trigger('change')}))
+            // .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Enhancer').prop('checked', false).trigger('change')}))
+        // var active = $("<h5></h5>").text("Activation ").insertBefore("#id15")
+            // .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Activation').prop('checked', true).trigger('change')}))
+            // .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Activation').prop('checked', false).trigger('change')}))
+        // var repress = $("<h5></h5>").text("Repression ").insertBefore("#id18")
+            // .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.Repression').prop('checked', true).trigger('change')}))
+            // .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.Repression').prop('checked', false).trigger('change')}))
+        // var ctcf = $("<h5></h5>").text("CTCF/insulator ").insertBefore("#id20")
+            // .append($("<span></span>").addClass("text-primary").text("[All]").on('click', function(){$('input.CTCF_Insulator').prop('checked', true).trigger('change')}))
+            // .append($("<span></span>").addClass("text-primary").text("[None]").on('click', function(){$('input.CTCF_Insulator').prop('checked', false).trigger('change')}))
 
     // Use a timeout to allow the rest of the page to load first.
     setTimeout(function() {
