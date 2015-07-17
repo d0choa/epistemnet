@@ -488,14 +488,14 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
                     }
                 }
             }
-
             d3.selectAll("."+this.value).style("stroke","#FF0000");
             d3.selectAll("."+this.value).attr("highlighted",true);
 
             // $(".link").each(function( d ) {
             //     console.log(d.clu)
             // });
-        }
+            force.start()
+        }        
     };
 
 
