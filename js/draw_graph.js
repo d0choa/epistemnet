@@ -415,14 +415,14 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
                         if (typeof d.pubmedid != "undefined") {
                             $("#pubmeds").append($("<span>, </span>"))
                         }
-                        $.each(d.pubmedidpubmedcentralid, function(i,value){
+                        $.each(d.pubmedcentralid, function(i,value){
                             var span = $("<span></span>").html($("<a></a>")
                                                                .attr('target', '_blank')
                                                                .attr('href', "http://www.ncbi.nlm.nih.gov/pmc/articles/"+value)
                                                                .text(value)
                                                               )
                             $("#pubmeds").append(span)
-                            if(i != (d.pubmedidpubmedcentralid.length - 1)){
+                            if(i != (d.pubmedcentralid.length - 1)){
                                 $("#pubmeds").append($("<span>, </span>"))
                             }
                         });
