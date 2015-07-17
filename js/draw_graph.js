@@ -397,7 +397,7 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
                 // Popup position
                 if(typeof d.pubmedid != "undefined" | typeof d.pubmedcentralid != "undefined"){
                     $("#pubmeds").html('');
-                    $("#pubmeds").append($("<span></span>").addClass("minititle").text("Pubmeds: "))
+                    $("#pubmeds").append($("<span></span>").addClass("minititle").text("Literature evidence: "))
                     if (typeof d.pubmedid != "undefined") {
                         $.each(d.pubmedid, function(i,value){
                             var span = $("<span></span>").html($("<a></a>")
