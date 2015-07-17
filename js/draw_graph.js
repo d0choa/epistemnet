@@ -17,6 +17,7 @@ var trans=[0,0];
 var scale=1;
 var color = d3.scale.category20();
 var nodecolor = d3.scale.category10();
+var fill = d3.scale.category10();
 var previousd;
 var counter=0;
 var centerx;
@@ -79,7 +80,16 @@ var drag = force.drag()
 
 var link = vis.selectAll(".link"),
     gnodes = vis.selectAll(".node");
-  	
+
+var groups;
+var group;
+var groupFill = function(d, i) { return fill(i & 3); };
+var groupPath = function(d) {
+    if(d.values.length > 0){
+        return "M" + d3.geom.hull(d.values.map(function(i) { return [i.x, i.y]; })).join("L") + "Z"
+    }
+};
+
 function dragstart(d, i) {
     $(".pop-up").fadeOut(50);
 }
@@ -185,18 +195,37 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
     graph.links=indexAndNum[0];
     mLinkNum = indexAndNum[1];
 
+    // var groups1  = d3.nest().key(function(d) {return(parseInt(d.id) & 3)}).entries(graph.nodes);
+    // groups = d3.nest().key(function(d) {return(parseInt(d.chromenet))}).entries(graph.nodes);
+    groups = [{key:null,values:[]}]
+    // groups = d3.nest().key(function(d) {return(parseInt(d.id) & 3)}).entries(graph.nodes);
+    
+    group = vis.selectAll(".area")
+        .attr("d", groupPath)
+        .data(groups)
+        .enter().insert("path", "circle")
+        .attr("class", "area")
+        .style("fill", groupFill)
+        .style("stroke", groupFill)
+        .style("stroke-width", 40)
+        .style("stroke-linejoin", "round")
+        .style("opacity", .2)
+
+    
     //Starting with the graph
     link = link.data(graph.links)
         .enter().append("svg:path")
         .attr("class", function(d) {
             var classes = "link";
             if(d.sign == 0){
-                classes = classes + " negative";
+                classes = classes + " negative ";
             }
+            classes = classes + " " + d.clu;
             return(classes)
          })
         .style('stroke-width', 1.5)
         .attr("fill", "none")
+        .attr("chromnet", function(d){ d.clu })
         // .attr("marker-end", "url(#end)")
         .attr("marker-end", function(d) {
             if(d.directed){
@@ -210,7 +239,7 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
         .call(drag)
         .on("click",mover)
         .classed('gnode', true);
-    
+
     var node = gnodes.append("path")
         .attr("class", function(d) {return "node " + d.type;})
         .attr("d", d3.svg.symbol()
@@ -267,6 +296,7 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
                 "A" + dr + "," + dr + " 0 0 "+arc+ "," + d.target.x + "," + d.target.y +
                 "A" + dr + "," + dr + " 0 0 "+(1-arc)+ "," + d.source.x + "," + d.source.y;
         });
+        group.attr("d", groupPath);
     }
 
     function mover(d,i) {
@@ -430,17 +460,78 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
         return i==a.indexOf(itm);
     });
     uniquestates = uniquestates.sort(function(a,b){return a-b})
+
+    var theselect = document.createElement("select");
+    var firstOption = document.createElement("option")
+    firstOption.innerHTML = "Select";
+    firstOption.disabled = true;
+    firstOption.selected = true;
+    theselect.appendChild(firstOption);
+    
+    // d3.select("#mainpanel").append("select").on("change", change);
+    for (var i = 1; i < uniquestates.length; i++) {
+        var anOption = document.createElement('option');
+        anOption.value = uniquestates[i];
+        anOption.innerHTML = "ChromNet " + (parseInt(uniquestates[i]));
+        theselect.appendChild(anOption);
+    }
+
+    theselect.onchange = function () {
+        d3.selectAll(".link").style("stroke","grey");
+        d3.selectAll(".link").attr("highlighted",false);
+        groups[0]["values"] = [];
+        if(typeof(this.value) != "undefined"){
+            for(var i = 0; i < graph.nodes.length; i++) {
+                for(var cn = 0; cn < graph.nodes[i].chromenet.length; cn++) {
+                    if(this.value == parseInt(graph.nodes[i].chromenet[cn])){
+                        groups[0]["values"].push(graph.nodes[i]);                        
+                    }
+                }
+            }
+
+            d3.selectAll("."+this.value).style("stroke","#FF0000");
+            d3.selectAll("."+this.value).attr("highlighted",true);
+
+            // $(".link").each(function( d ) {
+            //     console.log(d.clu)
+            // });
+        }
+    };
+
+
+    // function getGroups(value){
+    //     if(typeof(value) != "undefined"){
+    //         groups =[] ;
+    //         // Do whatever you want to do when the select changes
+    //         var g = {};
+    //         g.key = value;
+    //         g.values = [];
+    //         for(var i = 0; i < graph.nodes.length; i++) {
+    //             for(var cn = 0; cn < graph.nodes[i].chromenet.length; cn++) {
+    //                 if(value == parseInt(graph.nodes[i].chromenet[cn])){
+    //                     g.values.push(graph.nodes[i]);
+    //                 }
+    //             }
+    //         }
+    //         groups.push(g);
+    //         // vis.selectAll(".area").remove();            
+    //     }
+    //     return(groups)
+    // }
+    
+    $("#mainpanel").append(theselect);
+        
     // console.log(uniquestates)
-    $.each(uniquestates, function(i,state){
-        var elementId = "id"+(state+1);
-        var checkboxContainer = $('<div></div>')
-            .addClass('checkbox')
-            .attr("id", elementId)
-        var labelContainer = $('<label></label>').text("ChromNet " + (state+1))
-            .prepend($('<input></input>')
-                     .prop('type', 'checkbox')
-                     .addClass(statetypes[state])
-                     // .change(
+    // $.each(uniquestates, function(i,state){
+    //     var elementId = "id"+(state+1);
+    //     var checkboxContainer = $('<div></div>')
+    //         .addClass('checkbox')
+    //         .attr("id", elementId)
+    //     var labelContainer = $('<label></label>').text("ChromNet " + (state+1))
+    //         .prepend($('<input></input>')
+    //                  .prop('type', 'checkbox')
+    //                  .addClass(statetypes[state])
+    //                  .change(
                          // //Preparing new list of links
                          // $(".pop-up").fadeOut(50);
                          // minLinks=[];
@@ -469,13 +560,13 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
                          // link.exit().remove();
                          // keepNodesOnTop();
                          // force.start();
-                     // })
-            .prop("checked", false).val(state))
-           .attr("width","50px")
-           .attr("height","10px");
-           checkboxContainer.append(labelContainer);
-           $("#mainpanel").append(checkboxContainer);
-           var hashedid = "#"+elementId;
+                         // }
+           //  .prop("checked", false).val(state))
+           // .attr("width","50px")
+           // .attr("height","10px");
+           // checkboxContainer.append(labelContainer);
+           // $("#mainpanel").append(checkboxContainer);
+           // var hashedid = "#"+elementId;
            // var rectpanel = d3.select(String(hashedid))
            //     .append("svg")
            //     .attr("width", 60)
@@ -487,7 +578,7 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
            // .attr("y2", 1)
            // .attr("stroke-width", 5)
            // .style("stroke", color(parseInt(state)))
-          })
+          // })
 
         //All labels
         // var elong = $("<h5></h5>").text("Elongation ").insertBefore("#id1")
