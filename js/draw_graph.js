@@ -1,6 +1,5 @@
 "use strict";
 
-3
 var NETWORK_LOCAL_DATA_URI = 'data/mesc_directed_epigenetic_network.corrected.json';
 var NETWORK_WINDOW_TAG = "#network-view";
 
