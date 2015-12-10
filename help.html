@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>EpiStemNet - A network of chromatin component co-location in ESC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/bootswatch.min.css">
+    <link rel="stylesheet" href="css/typeahead.js-bootstrap.css">
+    <link rel="stylesheet" href="css/graph.css">
+  </head>
+  <body>
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+	<div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+	  <a href="./index.html" class="navbar-brand">EpiStemNet</a>
+	</div>
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="./index.html">Network</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Resources <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a target="_blank" href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=mm9&amp;hubUrl=http://epistemnet.bioinfo.cnio.es/mESC_CNIO_hub2/hub.txt">UCSC Track Hub</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a target="_blank" href="https://github.com/EpiStemNet/">Source Code (Github)</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a target="_blank" href="http://epistemnet.bioinfo.cnio.es/download/">Download Data</a></li>
+              </ul>
+            </li>
+            <li><a href="./help.html">Help</a></li>
+          </ul>
+        </div>		
+      </div>
+    </div>
+        
+    <div class="container">
+      <h1>Inference of the epigenomic communication network</h1>
+      
+      <h3>ChIP-Seq, MeDIP and GLIB data processing</h3>
+      
+      <p>We downloaded sra files from 139 Chromatin Immunoprecipitation Sequencing (ChIP-Seq), Methylated DNA immunoprecipitation (MeDIP) and GLIB (glucosylation, periodate oxidation and biotinylation) experiments described in <a href="http://biorxiv.org/highwire/filestream/8992/field_highwire_adjunct_files/0/008821-1.xlsx">Supplementary Table 1</a> at Juan et al. This collection includes 3 types of cytosine modifications (5mC, 5hmC and 5fC), 13 histone marks (H2Aub1, H2AZ, H3K4me1, H3K4me2, H3K4me3, H3K9ac, H3K9me3, H3K27ac, H3K27me3, H3K36me2, H3K36me3, H3K79me2, H4K20me3) and 61 different Chromatin related Proteins (CrPs). CrPs include structural proteins, elements of the machinery involved in cytosine and histone modification, transcription factors (TFs, such as the stemness-related TFs NANOG, OCT4 and SOX2), and four different post-translational modifications of RNA polymerase II (RNAPolII: S2P, S5P, S7P and 8WG16 - unmodified) with binding data available for ESCs. The sra files were transformed into fastq files with the sra-toolkit (v2.1.12) and aligned to the reference mm9/NCBI37 genome with bwa v0.5.9-r16 allowing 0-1 mismatches. Unique reads were converted to BED format.</p>
+
+      <h3>Genome segmentation</h3>
+
+      <p>The input information used to segment the genome into different chromatin states was that derived from the 3 cytosine modifications, the 13 histone marks and the insulator protein CTCF - which has been previously shown to define a particular chromatin state per se (Ernst  &amp; Kellis, 2010). A multivariate Hidden Markov Model (HMM) was employed that uses two types of information: the frequency with which different combinations of chromatin marks are found with each other, and the frequency with which different chromatin states are spatially related in the genome. To apply this method we used the ChromHmm software (Ernst &amp; Kellis, 2012: v1.03). The input data to generate the model were the ChIP-Seq, MeDIP and GLIB bed files containing the genomic coordinates and strand orientation of the mapped sequences (see above). First, the genome was divided in 200 bp non-overlapping segments which were independently assigned a value of 1 or 0 in function of the presence or absence of histone marks, respectively, based on the count of the tags mapping to the segment and on a Poisson background model (Ernst &amp; Kellis, 2012) using a threshold of 10-4. After establishing a binary distribution for each mark, we trained the HMM model using a fixed number of randomly-initialized hidden states that varied from 20 to 33 states. We focused on a 20-state model that provided sufficient resolution to resolve biologically meaningful chromatin patterns. We used this model to compute the probability that each location is in a given chromatin state and we then assigned each 200 bp segment to its most likely state. Only, intervals with a probability higher than 0.95 were considered for further analysis.</p>
+
+      <h3>Read counts and pre-processing for the co-location network inference</h3>
+
+      <p>We used the ChromHMM segments with a probability higher than 0.95 as samples for the network inference. We filtered all bins for each state that were unexpectedly large (the upper 1% for each state) because they might produce outliers in the data and it is hard to justify where the signal occurs within the region. We counted the overlapping ChIP-Seq reads for the resulting segments using Rsamtools, although some of the ChIP-experiments had to be excluded from the network inference due to the low number of reads per bin, or the low number of bins with signal or study dependent artifacts, including: CTCF_GSE11431, NANOG_GSE11431, LAMIN1B and H3K27me3_GSE36114, SMAD1_GSE11431, MBD1A_GSE39610, MBD1B_GSE39610, MBD2A_GSE39610, MBD3A_GSE39610, MBD4_GSE39610, and MECP2_GSE39610 (as MBD2A was not used, the MBD2 co-localization data corresponds to MBD2T).</p>
+
+      <h3>Co-location network inference</h3>
+
+      <p>We used the ChromHMM segments with a probability higher than 0.95 as samples for the network inference. We applied the method described in (Perner et al, 2014) that aims to unravel the direct interactions between factors that cannot be &#34;explained&#34; by the other observed factors and thus, this is a more specific approach than an analysis of simple pairwise correlations. Consequently, the more complete the number of factors included in the analysis, the higher the certainty that inferred direct interactions correspond to actual co-dependences. We inferred an interaction network for each chromHMM state. Briefly, an Elastic Net was trained in a 10-fold Cross-validation to predict the HM/CTCF/DNA methylation of the CrPs or to predict each CrP from all other CrPs. Furthermore, the sparse partial correlation network (SPCN) was obtained using all the samples available. We selected the interactions between Histone marks/cytosine modifications and CrPs that obtained a high coefficient (w >= 2*sd(all_w)) in the Elastic Net prediction and that have a non-zero partial correlation coefficient in the SPCN.</p>
+
+      <h3>Functional Modularization of the Co-localization Network</h3>
+
+      <p>The co-localization network was decomposed into local networks of positive interactions. First, we calculated the frequency of each positive interaction for every chromatin state using ChromHMM peaks, considering that an interaction is present if both interactors are &#34;present&#34; in the same 200 bp genomic window. We calculated this frequency for each of the 20 chromatin states, such that we have a vector of 20 frequencies for each positive interaction. In order to reduce state-specific biases, the frequencies of the interactions were standardized separately for every state. These vectors were clustered by hierarchical clustering (Pearson correlation, average linkage) and the largest statistically supported clusters (p-value &lt; 0.05, n=10,000) according to Pvclust (Suzuki &amp; Shimodaira, 2006) were defined as chromnets.</p>
+
+      <h3>References</h3>
+
+      <ol>
+        <li>Ernst J &amp; Kellis M (2010) Discovery and characterization of chromatin states for systematic annotation of the human genome. Nat. Biotechnol. 28: 817&#45;825 </li>
+        <li>Ernst J &amp; Kellis M (2012) ChromHMM: automating chromatin-state discovery and characterization. Nat. Methods 9: 215&#45;216</li>
+        <li>Juan D, Perner J., Carrillo de Santa Pau E., Marsili S., Ochoa D., Ho-Ryun Chung,  Vingron M., Rico D., Valencia A. Epigenomic co-localization and co-evolution reveal a key role for 5hmC as a communication hub in the chromatin network of ESCs. <a href="http://dx.doi.org/10.1101/008821">[bioRxiv]</a></li>
+        <li>Perner J, Lasserre J, Kinkley S, Vingron M &amp; Chung H-R (2014) Inference of interactions between chromatin modifiers and histone modifications: from ChIP-Seq data to chromatin-signaling. Nucleic Acids Res. 42: 13689&#45;13695</li>
+        <li>Suzuki R &amp; Shimodaira H (2006) Pvclust: an R package for assessing the uncertainty in hierarchical clustering. Bioinforma. Oxf. Engl. 22:1540&#45;1542</li>
+      </ol>
+      <div class="largelogos">
+        <img src="logos.png" alt="logos.png" />
+      </div>
+    </div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-54309639-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script src="js/jquery-1.11.1.map"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/sizzle.min.js"></script>
+<script src="js/sizzle.min.map"></script>
+<script src="js/bootstrap-progressbar.min.js"></script>
+<script src="js/arbor.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootswatch.js"></script>
+<script src="js/d3.v3.js"></script>
+<script src="js/typeahead.bundle.min.js"></script>
+<script src="js/bootstrap3-typeahead.min.js"></script>
+<script src="js/draw_graph.js"></script>
+</body>
+</html>
