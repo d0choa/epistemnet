@@ -49,7 +49,7 @@ var rect = vis.append('svg:rect')
         previousd="";
         // d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
         d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
-        d3.selectAll('[highlighted=true]').style("stroke", function(d) { return d3.rgb(d.nodecolor).darker(); });
+        // d3.selectAll('[highlighted=true]').style("stroke", function(d) { return d3.rgb(d.nodecolor).darker(); });
         d3.selectAll('[highlighted=true]').attr("highlighted",false);
     });
 
