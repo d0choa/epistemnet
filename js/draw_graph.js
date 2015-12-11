@@ -145,6 +145,7 @@ $('#srch-term').on('change', function (e) {
 })
 
 $('#skipbutton').on('click',function(e){
+    $.cookie('loadingCon', false);
     $("#loadingCon").fadeOut();
     $("#netCon").fadeIn();
     $("#sidebar").fadeIn();
@@ -153,9 +154,22 @@ $('#skipbutton').on('click',function(e){
 })
 
 $("#about").click(function() {
+    $.cookie('loadingCon', true);
     $("#loadingCon").fadeIn();
+    console.log("test")
 });
-  
+
+if($.cookie('loadingCon') == 'true'){
+    $("#loadingCon").fadeIn();
+} else {
+    $("#loadingCon").fadeOut();
+    $.cookie('loadingCon', false);
+    $("#netCon").fadeIn();
+    $("#sidebar").fadeIn();
+    $("#mainpanel").fadeIn();
+    $("#slide-panel").fadeIn();
+}
+
 function searchNodes(nodeNames){
     // deletee previous
     d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
