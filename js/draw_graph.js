@@ -48,27 +48,13 @@ var rect = vis.append('svg:rect')
         $(".pop-up").fadeOut(50);
         previousd="";
         // d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
-        d3.selectAll('[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
+        d3.selectAll('.node[highlighted=true]').style("fill", function(d) { return d3.rgb(d.nodecolor); });
         // d3.selectAll('[highlighted=true]').style("stroke", function(d) { return d3.rgb(d.nodecolor).darker(); });
-        d3.selectAll('[highlighted=true]').attr("highlighted",false);
+        d3.selectAll('.node[highlighted=true]').attr("highlighted",false);
     });
 
 // build the arrow.
-var arrow = vis.append("svg:defs").selectAll("marker")
-    .data(["end"])      // Different link/path types can be defined here
-    .enter().append("svg:marker")    // This section adds in the arrows
-    .attr("id", function(d) { return d; })
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 20)
-    // .attr("refY", -1.5)
-    .attr("markerWidth", 10)
-    .attr("markerHeight", 7)
-    .attr("orient", "auto")
-    .append("svg:path")
-    .style("stroke", "#BBB")
-    .style("fill", "#BBB")
-    .attr("d", "M0,-3L10,0L0,3")
-
+var arrow;
 
 var force = d3.layout.force()
     .charge(-2500)
@@ -224,6 +210,19 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
         .style("stroke-linejoin", "round")
         .style("opacity", .2)
 
+    arrow = vis.append("svg:defs").selectAll("marker")
+        .data(graph.links)      // Different link/path types can be defined here
+        .enter().append("svg:marker")    // This section adds in the arrows
+        .attr("id", function(d) { return 'marker_' + d.id; })
+        .attr("class", function(d) { return(d.clu)})
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 15)
+        .attr("markerWidth", 10)
+        .attr("markerHeight", 7)
+        .attr("orient", "auto")
+        .attr("fill", "#BBB")
+        .append("svg:path")
+        .attr("d", "M0,-3L10,0L0,3")
     
     //Starting with the graph
     link = link.data(graph.links)
@@ -235,14 +234,13 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
             }
             classes = classes + " " + d.clu;
             return(classes)
-         })
+        })
         .style('stroke-width', 1.5)
         .attr("fill", "none")
         .attr("chromnet", function(d){ d.clu })
-        // .attr("marker-end", "url(#end)")
         .attr("marker-end", function(d) {
             if(d.directed){
-                return("url(#end)")
+                return('url(#marker_' + d.id  + ')')
             }
         })
         .on("click",lover);
@@ -494,6 +492,10 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
     theselect.onchange = function () {
         d3.selectAll(".link").style("stroke","grey");
         d3.selectAll(".link").attr("highlighted",false);
+        d3.selectAll("marker").attr("fill", "#BBB")
+        d3.selectAll("marker").style("stroke", "#BBB")
+        d3.selectAll(".link").style('stroke-width', 1.5)
+        
         groups[0]["values"] = [];
         if(typeof(this.value) != "undefined"){
             for(var i = 0; i < graph.nodes.length; i++) {
@@ -503,8 +505,12 @@ d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
                     }
                 }
             }
+            
+            d3.selectAll("."+this.value).attr('fill',"#FF0000");
             d3.selectAll("."+this.value).style("stroke","#FF0000");
             d3.selectAll("."+this.value).attr("highlighted",true);
+            d3.selectAll(".link."+this.value).style('stroke-width', 2.5)
+
 
             // $(".link").each(function( d ) {
             //     console.log(d.clu)
