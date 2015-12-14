@@ -145,7 +145,7 @@ $("#about").click(function() {
     console.log("test")
 });
 
-if($.cookie('loadingCon') == 'true'){
+if(typeof $.cookie('loadingCon') == 'undefined' || $.cookie('loadingCon') == 'true'){
     $("#loadingCon").fadeIn();
 } else {
     $("#loadingCon").fadeOut();
