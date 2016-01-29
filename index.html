@@ -34,7 +34,7 @@
           </div>
           <ul class="nav navbar-nav navbar-right">
             <li><a id="about" href="#">About</a></li>
-            <li><a href="./help.html">Help</a></li>
+            <li><a href="./help.html">Info</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Resources <span class="caret"></span></a>
               <ul class="dropdown-menu">
@@ -49,12 +49,12 @@
         </div>		
       </div>
     </div>
-    <div class="cntainr" id="loadingCon">
+    <div class="cntainr" style="display: none;" id="loadingCon">
       <div class="loadingbox" style="height:100%;display:table-cell;vertical-align:middle;">
         <div class="jumbotron clearfix" style="margin:0 auto;float:none;width:80%;margin:0 auto;">
           <h1>EpiStemNet</h1>
           
-          <p>We propose a framework based on a communication model in which histone and cytosine modifications are considered epigenetic signals, while chromatin-associated proteins (CrPs) act as emitters or receivers of these signals. We inferred the epigenetic communication network of mouse ESCs (EpiStemNet) from genome-wide location data (77 different epigenomic features) combined with extensive manual curation of epigenetic emitters and receivers. Notably, 5hmC represents the most central hub of this network, connecting DNA demethylation to most of the nucleosome remodeling complexes and to several key transcription factors of pluripotency. This website allows to interactively visualize the network of epigenetic communication, as well as to inspect the most relevant sub-networks (Chromnets).</p>
+          <p>Welcome to EpiStemNet, the epigenetic communication network of mouse ESCs. This network was inferred from genome-wide location data (77 different epigenomic features) combined with extensive manual curation. The network is based on a communication model in which histone and cytosine modifications are considered epigenetic signals, while chromatin-associated proteins (CrPs) act as emitters or receivers of these signals. This website allows to interactively visualize the network of epigenetic communication, as well as to inspect the most relevant sub-networks (Chromnets) with links to associated resources.</p>
           <div>
             <h4>Reference</h4>
             <ul>
@@ -125,6 +125,18 @@
         </dd>
         <dt>Link info</dt>
         <dd>On Click</dd>
+
+        <h4>ChromNet</h4>
+        <dt>Signif. sub-network</dt>
+        <dd id="chnets">
+          <svg width="100" height="40">
+            <rect x="0" y="0" rx="10" ry="10" width="100" height="40" style="fill:rgb(0,0,255);stroke-width:0;fill-opacity:0.1" />
+            <line x1="20" y1="20" x2="80" y2="20" stroke-width="5" style="stroke: #FF0000;"></line>
+            <circle cx="20" cy="20" r="12.5" stroke="#636363" fill="#d9d9d9" stroke-width="3"/>
+            <circle cx="80" cy="20" r="12.5" stroke="#636363" fill="#d9d9d9" stroke-width="3"/>
+          </svg>
+        </dd>          
+        
         <h4>Visualization</h4>
         <dt>Zoom In/Out</dt>
         <dd>Scroll</dd>
@@ -179,6 +191,7 @@
 </script>
 <script src="js/jquery-1.11.1.map"></script>
 <script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
 <script src="js/sizzle.min.js"></script>
 <script src="js/sizzle.min.map"></script>
 <script src="js/bootstrap-progressbar.min.js"></script>
